@@ -3,11 +3,11 @@ namespace Mogue.Base
 	class Level
 	{
 		Object[] objs;
-		void load(){
+		public void begin(){
 
 		}
 
-		void tick(){
+		public void tick(){
 			for(int i = 0; i<objs.Count; i++){
 				objs[i].tick();
 			}
