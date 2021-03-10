@@ -9,6 +9,9 @@ namespace Mogue.Components
 		public this(RenderAsset RA){
 			cRA = RA; // Assigns the given Render asset so this class is able to use it.
 		}
+		public ~this(){
+			delete cRA;
+		}
 		public new void tick(){
 			cRA.tick();
 		}

@@ -14,6 +14,15 @@ namespace Mogue.Test
 					)
 				);
 
+		public this(){
+
+		}
+		public ~this(){
+			for (let o in objs){
+				o.~Object();
+			}
+		}
+
 		public new void begin(){
 			for (let o in objs){
 				o.begin();

@@ -7,14 +7,19 @@ namespace Mogue.Base
 		public this(Component[] components){
 			comps = components;
 		}
+		public ~this(){
+			for(let c in comps){
+				delete c;
+			}
+		}
 		public void begin(){
-			for(int i = 0; i<comps.Count; i++){
-				comps[i].begin();
+			for(let c in comps){
+				c.begin();
 			}
 		}
 		public void tick(){
-			for(int i = 0; i<comps.Count; i++){
-				comps[i].tick();
+			for(let c in comps){
+				c.tick();
 			}
 		}
 	}
