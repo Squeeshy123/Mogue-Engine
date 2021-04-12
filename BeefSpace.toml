@@ -1,5 +1,0 @@
-FileVersion = 1
-Projects = {Mogue = {Path = "."}, glfw-beef = "*"}
-
-[Workspace]
-StartupProject = "Mogue"

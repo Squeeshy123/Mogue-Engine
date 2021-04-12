@@ -1,6 +1,0 @@
-FileVersion = 1
-Dependencies = {corlib = "*", glfw-beef = "*"}
-
-[Project]
-Name = "Mogue"
-StartupObject = "Mogue.Program"
