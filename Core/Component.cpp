@@ -7,5 +7,5 @@ void Component::begin()
 
 void Component::tick(float deltaTime)
 {
-	printf("Component Tick");
+	printf("Component Tick\n");
 }

@@ -1,22 +1,22 @@
 #include "Object.h"
 #include "RenderComponent.h"
-std::vector<Component> components = {RenderComponent()};
+#include <memory>
+std::vector<std::unique_ptr<Component>> components;
 
-Object::Object(std::vector<Component> comps)
+Object::Object(std::vector<std::unique_ptr<Component>> comps)
 {
-	components = comps;
 }
 
 void Object::begin()
 {
 	for (int i = 0; i < components.size(); i++) {
-		components[i].begin();
+		components[i]->begin();
 	}
 }
 
 void Object::tick(float deltaTime)
 {
 	for (int i = 0; i < components.size(); i++) {
-		components[i].tick(deltaTime);
+		components[i]->tick(deltaTime);
 	}
 }
