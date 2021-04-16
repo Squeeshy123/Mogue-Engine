@@ -1,9 +1,8 @@
 #include "Object.h"
 #include "RenderComponent.h"
-#include <memory>
-std::vector<std::unique_ptr<Component>> components;
+std::vector<Component*> components;
 
-Object::Object(std::vector<std::unique_ptr<Component>> comps)
+Object::Object(std::vector<Component*> comps)
 {
 }
 

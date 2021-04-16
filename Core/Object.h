@@ -4,7 +4,7 @@
 class Object
 {
 	public:
-		Object(std::vector<std::unique_ptr<Component>> comps);
+		Object(std::vector<Component*> comps);
 		virtual void begin();
 		virtual void tick(float deltaTime);
 };
