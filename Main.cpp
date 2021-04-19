@@ -1,43 +1,65 @@
 #include <SDL/SDL.h>
 #include <vector>
+
+#include "Core/WindowManager.h"
+#include "Core/RenderManager.h"
+#include "Core/UIManager.h"
+#include "Core/TextureManager.h"
+
 #include "Libs/imgui.h"
 #include "Libs/imgui_sdl.h"
 
-#include "Libs/imgui.h"
 
 #include "Core/Level.h"
 #include "Test/TestLevel.h"
 
+
+
 int main(int argc, char* argv[]) {
 
-	SDL_Init(SDL_INIT_EVERYTHING);
+	
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+		printf("Failed to initialize SDL!!\n");
+	}
+	WindowManager* window_manager = new WindowManager("Mogue", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, SDL_WINDOW_SHOWN);
+	window_manager->Begin();
 
-	SDL_Window* window = SDL_CreateWindow("Mogue", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_RESIZABLE);
-	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	RenderManager* render_manager = new RenderManager(window_manager->window, -1, SDL_RENDERER_ACCELERATED);
+	render_manager->Begin();
 
-	ImGui::CreateContext();
-	ImGuiSDL::Initialize(renderer, 800, 600);
-
+	UIManager* ui_manager = new UIManager(render_manager->renderer, 800, 800);
+	
+	TextureManager* texture_manager = new TextureManager(render_manager);
+	
 
 	TestLevel currentLevel = TestLevel();
 
+	//render_manager->add_texture_to_buffer(texture_manager->create_texture_asset("icon.png"));
+	
 	bool run = true;
 	while (run)
 	{
-		ImGuiIO& io = ImGui::GetIO();
+		
 
 		int wheel = 0;
-		currentLevel.tick(0.1);
+		currentLevel.tick(0.1f);
 		SDL_Event e;
+
+		window_manager->Tick();
+		render_manager->Tick();
+		ui_manager->tick();
+
 		while (SDL_PollEvent(&e))
 		{
+			window_manager->Input(e);
+
 			if (e.type == SDL_QUIT) run = false;
-			else if (e.type == SDL_WINDOWEVENT)
+			if (e.type == SDL_WINDOWEVENT)
 			{
 				if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 				{
-					io.DisplaySize.x = static_cast<float>(e.window.data1);
-					io.DisplaySize.y = static_cast<float>(e.window.data2);
+					ui_manager->getIO().DisplaySize.x = static_cast<float>(e.window.data1);
+					ui_manager->getIO().DisplaySize.y = static_cast<float>(e.window.data2);
 				}
 			}
 			else if (e.type == SDL_MOUSEWHEEL)
@@ -49,13 +71,13 @@ int main(int argc, char* argv[]) {
 		int mouseX, mouseY;
 		const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
 
-
-		io.DeltaTime = 1.0f / 60.0f;
-		io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
-		io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
-		io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
-		io.MouseWheel = static_cast<float>(wheel);
-
+		// Mouse Re-centering
+		ui_manager->getIO().DeltaTime = 1.0f / 60.0f;
+		ui_manager->getIO().MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
+		ui_manager->getIO().MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+		ui_manager->getIO().MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+		ui_manager->getIO().MouseWheel = static_cast<float>(wheel);
+		/*
 		ImGui::NewFrame();
 		// Imgui Stuff
 		ImGui::Begin("Debug");
@@ -64,21 +86,22 @@ int main(int argc, char* argv[]) {
 		}
 		ImGui::End();
 		
-		SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
-		SDL_RenderClear(renderer);
+		
 
 		ImGui::Render();
 		ImGuiSDL::Render(ImGui::GetDrawData());
+		*/
+		
 
-		SDL_RenderPresent(renderer);
+		render_manager->End_Tick();
 	}
 
-	ImGuiSDL::Deinitialize();
+	
 
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
-
-	ImGui::DestroyContext();
+	delete render_manager;
+	delete ui_manager;
+	delete window_manager;
+	
 
 	return 0;
 }

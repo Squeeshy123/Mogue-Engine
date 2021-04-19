@@ -145,7 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Core\Component.cpp" />
+    <ClCompile Include="Core\Asset.cpp" />
     <ClCompile Include="Core\Level.cpp" />
     <ClCompile Include="Libs\example.cpp" />
     <ClCompile Include="Libs\imgui.cpp" />
@@ -155,15 +155,19 @@
     <ClCompile Include="Libs\imgui_tables.cpp" />
     <ClCompile Include="Libs\imgui_widgets.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Core\Object.cpp" />
-    <ClCompile Include="Core\RenderComponent.cpp" />
+    <ClCompile Include="Core\RenderManager.cpp" />
+    <ClCompile Include="Core\AssetTypes\RenderAsset.cpp" />
     <ClCompile Include="Test\TestLevel.cpp" />
+    <ClCompile Include="Core\WindowManager.cpp" />
+    <ClCompile Include="Core\UIManager.cpp" />
+    <ClCompile Include="Core\TextureManager.cpp" />
+    <ClCompile Include="Core\AssetTypes\TextureAsset.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core\Component.h" />
+    <ClInclude Include="Core\Asset.h" />
+    <ClInclude Include="Core\Components.h" />
+    <ClInclude Include="Core\ECS.h" />
     <ClInclude Include="Core\Level.h" />
-    <ClInclude Include="Core\Object.h" />
-    <ClInclude Include="Core\RenderComponent.h" />
     <ClInclude Include="Libs\imconfig.h" />
     <ClInclude Include="Libs\imgui.h" />
     <ClInclude Include="Libs\imgui_internal.h" />
@@ -171,7 +175,13 @@
     <ClInclude Include="Libs\imstb_rectpack.h" />
     <ClInclude Include="Libs\imstb_textedit.h" />
     <ClInclude Include="Libs\imstb_truetype.h" />
+    <ClInclude Include="Core\RenderManager.h" />
+    <ClInclude Include="Core\AssetTypes\RenderAsset.h" />
     <ClInclude Include="Test\TestLevel.h" />
+    <ClInclude Include="Core\WindowManager.h" />
+    <ClInclude Include="Core\UIManager.h" />
+    <ClInclude Include="Core\TextureManager.h" />
+    <ClInclude Include="Core\AssetTypes\TextureAsset.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

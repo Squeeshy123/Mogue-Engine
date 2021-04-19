@@ -1,12 +1,15 @@
 #pragma once
-#include "Object.h"
+#include "ECS.h"
+
 #include <vector>
+#include <SDL/SDL.h>
 class Level
 {
 	public:
-		std::vector<Object*> objects;
+		Manager* manager;
+
 		Level();
-		Level(std::vector<Object*> objects);
+
 		virtual void begin();
 		virtual void tick(float deltaTime);
 };
