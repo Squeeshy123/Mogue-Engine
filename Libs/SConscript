@@ -1,0 +1,13 @@
+Import('env')
+
+import os
+
+currentPath = '.'
+
+# Gets all the .cpp and.h files and puts them in a list
+srcs = os.walk(currentPath)
+
+print(srcs)
+
+
+#Return('objs')
