@@ -9,5 +9,23 @@ srcs = os.walk(currentPath)
 
 print(srcs)
 
+#Array of objects
+objs = []
 
-#Return('objs')
+# Loops through source files
+for roots, dirs, files in srcs:
+	print("Files: " + str(files))
+
+	for f in files:
+		if f.endswith(".cpp"):
+			print(f)
+			# Store as object, then add it to array
+			o = env.Object(f)
+			objs.append(o)
+	for d in dirs:
+		SConscript(d + "\\SConscript")
+#print("\n" + str(objs))
+#Return array
+
+#obj = env.Object('RenderManager.cpp')
+Return('objs')
