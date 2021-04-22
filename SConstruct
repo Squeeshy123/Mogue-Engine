@@ -1,6 +1,11 @@
+import os
+
 env = Environment()
 
-is_vs = ARGUMENTS.get('vs', 0)
+is_vs = False
+
+if 'vsproj' in ARGUMENTS:
+	is_vs = bool(ARGUMENTS['vsproj'])
 
 build_dir = './build'
 
@@ -29,7 +34,7 @@ for subdir in subdirs:
 main = env.Object('src\\main.cpp')
 objs.extend(main)
 
-prog = NULL
+prog = None
 
 print("\nFinal objects: " + str(objs) + "\n")
 if len(objs) > 0:
@@ -37,18 +42,38 @@ if len(objs) > 0:
 else:
 	print("No files found!")
 
-def check_dirs_and_scan(directory, array):
+def check_dirs_and_scan(directory, srcs, heads):
 	folder = os.walk(directory)
+	for dirs, root, files in folder:
+		#print(dirs)
+		if len(dirs) < -1:
+			if d != '.' and d != '/' and d != '\\':
+				print("Scanning: " + d)
+
+				temp_folder = check_dirs_and_scan(d, srcs, heads)
+
+				srcs.extend(temp_folder[0])
+				heads.extend(temp_folder[1])
 	
-	return array
+		for f in files:
+			if f.endswith(".cpp"):
+				srcs.extend(f)
+			elif f.endswith(".h"):
+				heads.extend(f)
+	return [srcs, heads]
 	
 
-if is_vs:
-	walk = os.walk('.')
-	src = []
-	for dirs, root, file in walk:
-		for d in dirs:
-			os.walk(d)
-		for f in file:
-			files.
-	env.MSVSProject()
+if is_vs == 1:
+	sources = []
+	headers = []
+
+	scan = []
+
+	scan.extend(check_dirs_and_scan('./src', sources, headers))
+	scan.extend(check_dirs_and_scan('./Libs', sources, headers))
+
+	sources = scan[0]
+	headers = scan[0]
+	
+	print("Mogue." +  '${MSVSPROJECTSUFFIX}')
+	env.MSVSProject(target = "Mogue" +  env['MSVSPROJECTSUFFIX'], srcs = sources, incs = headers, buildtarget = prog, variant='Debug | Release')
