@@ -18,8 +18,9 @@ for roots, dirs, files in srcs:
 	print("Directories: " + str(dirs))
 
 	for d in dirs:
-		o =SConscript(".\\" + d + "\\SConscript")
+		o = SConscript(root + "\\" + d + "\\SConscript")
 		objs.extend(o)
+	
 	for f in files:
 		if f.endswith(".cpp"):
 			print(f)

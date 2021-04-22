@@ -1,4 +1,4 @@
-#include "SDL/SDL.h"
+#include <SDL/SDL.h>
 #undef main
 
 #include "imgui.h"
