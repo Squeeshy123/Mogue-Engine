@@ -1,12 +1,12 @@
 #include "Core/TextureAsset.h"
 
-TextureManager* texture_manager;
+TextureServer* texture_manager;
 
 SDL_Texture* texture;
 SDL_Rect tex_size;
 
 
-TextureAsset::TextureAsset(TextureManager* mtexture_manager, std::string path)
+TextureAsset::TextureAsset(TextureServer* mtexture_manager, std::string path)
 {
 	// initializes the texture manager
 	texture_manager = mtexture_manager;
@@ -32,4 +32,12 @@ SDL_Texture* TextureAsset::get_texture()
 SDL_Rect* TextureAsset::get_dimensions()
 {
 	return &tex_size;
+}
+
+void TextureAsset::set_dimensions(int x, int y, int w, int h)
+{
+	tex_size.x = x;
+	tex_size.y = x;
+	tex_size.w = w;
+	tex_size.h = h;
 }

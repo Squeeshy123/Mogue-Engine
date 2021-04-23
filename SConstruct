@@ -1,5 +1,9 @@
 import os
 
+build_dir = './build'
+
+VariantDir(build_dir, 'src', duplicate=0)
+
 env = Environment()
 
 is_vs = False
@@ -7,7 +11,7 @@ is_vs = False
 if 'vsproj' in ARGUMENTS:
 	is_vs = bool(ARGUMENTS['vsproj'])
 
-build_dir = './build'
+
 
 env.Append(CPPPATH=["C:\\Users\\finnm\\Desktop\\CSCWork\\MogueEngine\\Mogue\\","C:\\Users\\finnm\\Desktop\\CSCWork\\MogueEngine\\Mogue\\src", 'C:\\Users\\finnm\\Desktop\\CSCWork\\Libraries\\SDL\\include\\'])
 env.Append(LIBPATH=['C:\\Users\\finnm\\Desktop\\CSCWork\\Libraries\\SDL\\lib\\'])
@@ -19,7 +23,6 @@ Export('env')
 subdirs = ['src\\Core','src\\Test', 'Libs']
 objs = []
 
-VariantDir(build_dir, 'src', duplicate=0)
 
 for subdir in subdirs:
 	print("\nReading from: " + '.\\%s\\SConscript' % subdir)
@@ -27,16 +30,12 @@ for subdir in subdirs:
 	env.Install(build_dir, o)
 	objs.extend(o)
 
-#for obj in objs:
-#	if obj == None:
-#		objs.remove(obj)
-
 main = env.Object('src\\main.cpp')
 objs.extend(main)
 
 prog = None
 
-print("\nFinal objects: " + str(objs) + "\n")
+
 if len(objs) > 0:
 	prog = env.Program("Mogue", objs)
 else:
@@ -56,11 +55,14 @@ def check_dirs_and_scan(directory, srcs, heads):
 				heads.extend(temp_folder[1])
 	
 		for f in files:
+			
 			if f.endswith(".cpp"):
-				srcs.extend(f)
+				srcs.append(dirs+ "/" + f)
+				print(dirs+ "/" + f)	
 			elif f.endswith(".h"):
-				heads.extend(f)
-	return [srcs, heads]
+				heads.append(dirs+ "/" + f)
+				print(dirs+ "/" + f)
+	return (srcs, heads)
 	
 
 if is_vs == 1:
@@ -69,11 +71,15 @@ if is_vs == 1:
 
 	scan = []
 
-	scan.extend(check_dirs_and_scan('./src', sources, headers))
-	scan.extend(check_dirs_and_scan('./Libs', sources, headers))
+	scan.append(check_dirs_and_scan('./src', sources, headers))
+	scan.append(check_dirs_and_scan('./Libs', sources, headers))
 
-	sources = scan[0]
-	headers = scan[0]
+	sources = scan[0][0] + scan[1][0]
+	headers = scan[0][1] + scan[1][1]
 	
-	print("Mogue." +  '${MSVSPROJECTSUFFIX}')
-	env.MSVSProject(target = "Mogue" +  env['MSVSPROJECTSUFFIX'], srcs = sources, incs = headers, buildtarget = prog, variant='Debug | Release')
+	env.MSVSProject(target = "Mogue" +  env['MSVSPROJECTSUFFIX'], srcs = sources, incs = headers, buildtarget = prog, variant='Debug')
+	
+	print(sources)
+	print("")
+	print(headers)
+	print("Successfully Created visual studio project")

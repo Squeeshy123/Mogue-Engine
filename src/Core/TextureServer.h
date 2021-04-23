@@ -6,15 +6,15 @@
 #include <string>
 
 class TextureAsset;
-class RenderManager;
+class RenderServer;
 
-class TextureManager
+class TextureServer
 {
 	public:
-		TextureManager(RenderManager* renderer);
+		TextureServer(RenderServer* renderer);
 
 		TextureAsset* create_texture_asset(std::string path);
 		SDL_Texture*  load_texture(std::string path);
 };
 
-#include "RenderManager.h"
+#include "RenderServer.h"

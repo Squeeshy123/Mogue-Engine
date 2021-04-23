@@ -1,12 +1,12 @@
 #pragma once
 #include <string>
 #include <SDL/SDL.h>
-class WindowManager
+class WindowServer
 {
 	public:
 		SDL_Window* window = nullptr;
-		WindowManager(const char* Name, int window_pos_x, int window_pos_y, int width, int height,  uint32_t flags);
-		~WindowManager();
+		WindowServer(const char* Name, int window_pos_x, int window_pos_y, int width, int height,  uint32_t flags);
+		~WindowServer();
 		
 		void Begin();
 		void Tick();

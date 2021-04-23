@@ -5,6 +5,9 @@
 #include <bitset>
 #include <array>
 
+#include "Core/RenderServer.h"
+#include "Core/TextureServer.h"
+
 class Object;
 class Component;
 
@@ -31,10 +34,14 @@ class Component {
 
 		bool enabled = true;
 
+		virtual ~Component(){}
+
 		virtual void init() {}
 		virtual void update() {}
 		virtual void draw() {}
-		virtual ~Component(){}
+		
+		RenderServer* get_render_manager() {if(!object){ object->get_render_manager(); } };
+		TextureServer* get_texture_manager() { if(!object) { object->get_texture_manager(); } };
 
 };
 
@@ -48,18 +55,28 @@ class Object {
 		ComponentBitSet componentBitSet;
 
 	public:
+
+		Manager* manager;
+
+		~Object(){
+			
+		}
+
 		void update() {
 			for (auto& c : components) c->update();
 			for (auto& c : components) c->draw();
 		}
+
 		void draw() { }
 		bool isEnabled() { return enabled; }
 		void destroy() { enabled = false; }
 
 
+
 		template <typename T> bool hasComponent() const {
 			return componentBitSet[getComponentID()];
 		}
+		
 		template <typename T, typename... TArgs>
 		T& addComponent(TArgs&&... mArgs) {
 			T* c(new T(std::forward<TArgs>(mArgs...)));
@@ -83,9 +100,31 @@ class Object {
 
 class Manager
 {
+	
 	private:
 		std::vector<std::unique_ptr<Object>> objects;
+
+		RenderServer* render_server;
+		TextureServer* texture_server;
+
 	public:
+
+
+		void set_render_server(RenderServer* server) {
+			render_server = server;
+		}
+		void set_texture_server(TextureServer* server){
+			texture_server = server;
+		}
+
+		RenderServer* get_render_server(){
+			return render_server;
+		}
+
+		TextureServer* get_texture_server(){
+			return texture_server;
+		}
+
 		void update() {
 			for (auto& o : objects) o->update();
 		}
@@ -105,10 +144,13 @@ class Manager
 				std::end(objects));
 		}
 
-		Object& addObject() {
+		Object& add_object() {
 			Object* o = new Object();
 			std::unique_ptr<Object> uPtr{ o };
+			o->manager = this;
 			objects.emplace_back(std::move(uPtr));
 			return *o;
 		}
+
+
 };

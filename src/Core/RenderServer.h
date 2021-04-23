@@ -7,12 +7,12 @@
 #include <vector>
 
 
-class RenderManager
+class RenderServer
 {
 	public:
 		SDL_Renderer* renderer;
-		RenderManager(SDL_Window* window, int index, uint32_t flags);
-		~RenderManager();
+		RenderServer(SDL_Window* window, int index, uint32_t flags);
+		~RenderServer();
 		void DrawRectangle(int x, int y, int w, int h);
 
 		void Begin();

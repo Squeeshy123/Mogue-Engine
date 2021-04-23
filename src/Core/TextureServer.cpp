@@ -1,13 +1,16 @@
-#include "Core/TextureManager.h"
+#include <string>
 
-RenderManager* gRenderer;
+#include "Core/TextureServer.h"
+#include "RenderServer.h"
 
-TextureManager::TextureManager(RenderManager* renderer)
+RenderServer* gRenderer;
+
+TextureServer::TextureServer(RenderServer* renderer)
 {
     gRenderer = renderer;
 }
 
-SDL_Texture* TextureManager::load_texture(std::string path)
+SDL_Texture* TextureServer::load_texture(std::string path)
 {
     SDL_Texture* newTexture = NULL;
 
@@ -32,6 +35,6 @@ SDL_Texture* TextureManager::load_texture(std::string path)
 
 
 // Creates a texture asset to be loaded to the render manager
-TextureAsset* TextureManager::create_texture_asset(std::string path) {
+TextureAsset* TextureServer::create_texture_asset(std::string path) {
     return new TextureAsset(this, path);
 }

@@ -4,7 +4,9 @@ Level::Level()
 {
 }
 
-
+Level::Level(RenderServer render_manager, TextureServer texture_manager)
+{
+}
 
 void Level::begin()
 {
