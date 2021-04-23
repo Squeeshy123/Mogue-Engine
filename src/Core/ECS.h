@@ -10,6 +10,7 @@
 
 class Object;
 class Component;
+class Manager;
 
 using ComponentID = std::size_t;
 
@@ -29,10 +30,12 @@ using ComponentBitSet = std::bitset<maxComponents>;
 using ComponentArray = std::array<Component*, maxComponents>;
 
 class Component {
-	public:
+	private: 
 		Object* object;
 
+	public:
 		bool enabled = true;
+
 
 		virtual ~Component(){}
 
@@ -40,15 +43,20 @@ class Component {
 		virtual void update() {}
 		virtual void draw() {}
 		
-		RenderServer* get_render_manager() {if(!object){ object->get_render_manager(); } };
-		TextureServer* get_texture_manager() { if(!object) { object->get_texture_manager(); } };
+		void set_object(Object* obj) { object = obj; }
+		Object* get_object(){ return object; };
+
+		RenderServer* get_render_server();
+		TextureServer* get_texture_server();
 
 };
 
 class Object {
 	private:
+		Manager* manager = NULL;
+		
 		bool enabled = true;
-
+		
 		std::vector<std::unique_ptr<Component>> components;
 
 		ComponentArray componentArray;
@@ -56,7 +64,7 @@ class Object {
 
 	public:
 
-		Manager* manager;
+		
 
 		~Object(){
 			
@@ -71,7 +79,8 @@ class Object {
 		bool isEnabled() { return enabled; }
 		void destroy() { enabled = false; }
 
-
+		Manager* get_manager(){ return manager; }
+		void set_manager(Manager* m) { manager = m; };
 
 		template <typename T> bool hasComponent() const {
 			return componentBitSet[getComponentID()];
@@ -80,7 +89,7 @@ class Object {
 		template <typename T, typename... TArgs>
 		T& addComponent(TArgs&&... mArgs) {
 			T* c(new T(std::forward<TArgs>(mArgs...)));
-			c->object = this;
+			c->set_object(this);
 			std::unique_ptr<Component> uPtr{ c };
 			components.emplace_back(std::move(uPtr));
 
@@ -97,6 +106,9 @@ class Object {
 			return *static_cast<T*>(ptr);
 		}
 };
+
+
+
 
 class Manager
 {
@@ -147,10 +159,21 @@ class Manager
 		Object& add_object() {
 			Object* o = new Object();
 			std::unique_ptr<Object> uPtr{ o };
-			o->manager = this;
+			o->set_manager(this);
 			objects.emplace_back(std::move(uPtr));
 			return *o;
 		}
 
 
 };
+
+
+
+
+RenderServer* Component::get_render_server() {
+	return get_object()->get_manager()->get_render_server(); 
+}
+
+TextureServer* Component::get_texture_server(){
+	return get_object()->get_manager()->get_texture_server();
+}

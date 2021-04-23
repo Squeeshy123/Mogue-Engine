@@ -11,8 +11,9 @@ class Level
 {
 	public:
 		Manager* manager;
+		
 		Level();
-		Level(RenderServer render_manager, TextureServer texture_manager);
+		Level(RenderServer* render_server, TextureServer* texture_server);
 
 		virtual void begin();
 		virtual void tick(float deltaTime);

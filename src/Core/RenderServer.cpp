@@ -50,7 +50,7 @@ void RenderServer::Tick()
 	RenderServer::DrawRectangle(100, 100, 100, 100);
 
 	for (size_t i = 0; i < render_buffer.size(); i++) {
-		SDL_RenderCopy(renderer, render_buffer[i]->get_texture(), NULL, &render_buffer[i]->get_dimensions());
+		SDL_RenderCopy(renderer, render_buffer[i]->get_texture(), NULL, render_buffer[i]->get_dimensions());
 		printf("Displaying a texture\n");
 	}
 

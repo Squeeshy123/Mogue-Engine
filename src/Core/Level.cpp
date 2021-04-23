@@ -4,7 +4,7 @@ Level::Level()
 {
 }
 
-Level::Level(RenderServer render_manager, TextureServer texture_manager)
+Level::Level(RenderServer* render_server, TextureServer* texture_server)
 {
 }
 
