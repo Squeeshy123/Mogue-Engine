@@ -13,6 +13,7 @@
 #include "Core/Level.h"
 #include "Test/TestLevel.h"
 
+#include "Core/Components.h"
 
 
 int wmain(int argc, char* argv[]) {
@@ -25,7 +26,7 @@ int wmain(int argc, char* argv[]) {
 	{
 		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
 	}
-	
+
 	WindowServer* window_manager = new WindowServer("Mogue", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, SDL_WINDOW_SHOWN);
 	window_manager->Begin();
 
@@ -33,31 +34,43 @@ int wmain(int argc, char* argv[]) {
 	render_server->Begin();
 
 	UIServer* ui_server = new UIServer(render_server->renderer, 800, 800);
-	
+
 	TextureServer* texture_server = new TextureServer(render_server);
 	
 	
-
-	TestLevel currentLevel = TestLevel();
-
-	TextureAsset* ta = texture_server->create_texture_asset("C:\\Users\\finnm\\Desktop\\CSCWork\\MogueEngine\\Mogue\\icon.png");
-
-	ta->set_dimensions(100, 100, 100, 100);
-
-	render_server->add_texture_to_buffer(ta);
+	TestLevel* currentLevel = new TestLevel();
 	
+	Object test_obj = currentLevel->add_object();
+	
+	test_obj.addComponent<SpriteComponent>();
+
+	currentLevel->begin();
+
+
+	Uint64 NOW = SDL_GetPerformanceCounter();
+	Uint64 LAST = 0;
+	double deltaTime = 0;
+
 	bool run = true;
 	while (run)
 	{
+		LAST = NOW;
+		NOW = SDL_GetPerformanceCounter();
+
+		deltaTime = (double)((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
+
 		
 
 		int wheel = 0;
-		currentLevel.tick(0.1f);
+
 		SDL_Event e;
 
+		
 		window_manager->Tick();
 		render_server->Tick();
 		ui_server->tick();
+
+		currentLevel->tick(deltaTime);
 
 		while (SDL_PollEvent(&e))
 		{
@@ -108,9 +121,9 @@ int wmain(int argc, char* argv[]) {
 	}
 
 	
-
-	delete render_server;
+	delete texture_server;
 	delete ui_server;
+	delete render_server;
 	delete window_manager;
 	
 

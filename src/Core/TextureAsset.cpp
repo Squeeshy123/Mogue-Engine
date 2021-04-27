@@ -22,6 +22,11 @@ TextureAsset::TextureAsset(TextureServer* mtexture_manager, std::string path)
 	tex_size.h = h;
 }
 
+TextureAsset::~TextureAsset()
+{
+	delete texture;
+}
+
 // returns the current texture assets texture
 SDL_Texture* TextureAsset::get_texture()
 {

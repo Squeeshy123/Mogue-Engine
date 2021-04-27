@@ -15,18 +15,20 @@ RenderServer::RenderServer(SDL_Window* window, int index, uint32_t flags)
 
 RenderServer::~RenderServer()
 {
+	for (size_t i = 0; i < render_buffer.size(); i++) {
+		delete render_buffer[i];
+	}
 	SDL_DestroyRenderer(renderer);
 }
 
 void RenderServer::DrawRectangle(int x, int y, int w, int h)
 {
-	SDL_Rect* rect;
-		rect->x = x;
-		rect->y = y;
-		rect->w = w;
-		rect->h = h;
-	SDL_RenderDrawRect(renderer, rect);
-	delete rect;
+	SDL_Rect rect;
+		rect.x = x;
+		rect.y = y;
+		rect.w = w;
+		rect.h = h;
+	SDL_RenderDrawRect(renderer, &rect);
 }
 
 
@@ -43,17 +45,18 @@ void RenderServer::Begin()
 
 void RenderServer::Tick()
 {
-
+	printf("Render ticking start!\n");
 	SDL_RenderClear(renderer);
 
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	RenderServer::DrawRectangle(100, 100, 100, 100);
+	DrawRectangle(100, 100, 100, 100);
 
 	for (size_t i = 0; i < render_buffer.size(); i++) {
 		SDL_RenderCopy(renderer, render_buffer[i]->get_texture(), NULL, render_buffer[i]->get_dimensions());
 		printf("Displaying a texture\n");
 	}
 
+	printf("Render ticking End!\n");
 }
 
 void RenderServer::End_Tick()

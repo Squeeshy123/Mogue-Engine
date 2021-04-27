@@ -21,7 +21,7 @@ inline ComponentID getComponentID() {
 
 template<typename T> inline ComponentID getComponentTypeID() noexcept {
 	static ComponentID typeID = getComponentID();
-	return typeID();
+	return typeID;
 }
 
 constexpr std::size_t maxComponents = 32;
@@ -31,33 +31,31 @@ using ComponentArray = std::array<Component*, maxComponents>;
 
 class Component {
 	private: 
-		Object* object;
+		Object* object = nullptr;
 
 	public:
 		bool enabled = true;
 
 
-		virtual ~Component(){}
+		virtual ~Component() {}
 
-		virtual void init() {}
-		virtual void update() {}
-		virtual void draw() {}
+		virtual void begin() {}
+		virtual void tick(float deltaTime)  {}
 		
 		void set_object(Object* obj) { object = obj; }
 		Object* get_object(){ return object; };
 
-		RenderServer* get_render_server();
+		RenderServer* get_render_server(); 
 		TextureServer* get_texture_server();
-
 };
 
 class Object {
 	private:
-		Manager* manager = NULL;
+		Manager* manager = nullptr;
 		
 		bool enabled = true;
 		
-		std::vector<std::unique_ptr<Component>> components;
+		std::vector<Component*> components;
 
 		ComponentArray componentArray;
 		ComponentBitSet componentBitSet;
@@ -69,13 +67,13 @@ class Object {
 		~Object(){
 			
 		}
-
-		void update() {
-			for (auto& c : components) c->update();
-			for (auto& c : components) c->draw();
+		void begin() {
+			for (auto& c : components) c->begin();
+		}
+		void tick(float deltaTime) {
+			for (auto& c : components) c->tick(deltaTime);
 		}
 
-		void draw() { }
 		bool isEnabled() { return enabled; }
 		void destroy() { enabled = false; }
 
@@ -88,15 +86,14 @@ class Object {
 		
 		template <typename T, typename... TArgs>
 		T& addComponent(TArgs&&... mArgs) {
-			T* c(new T(std::forward<TArgs>(mArgs...)));
+			T* c(new T(std::forward<TArgs>(mArgs)...));
 			c->set_object(this);
-			std::unique_ptr<Component> uPtr{ c };
-			components.emplace_back(std::move(uPtr));
+			components.emplace_back(c);
 
 			componentArray[getComponentTypeID<T>()] = c;
 			componentBitSet[getComponentTypeID<T>()] = true;
 
-			c->init();
+			c->begin();
 			return *c;
 		}
 
@@ -116,8 +113,8 @@ class Manager
 	private:
 		std::vector<std::unique_ptr<Object>> objects;
 
-		RenderServer* render_server;
-		TextureServer* texture_server;
+		RenderServer* render_server = nullptr;
+		TextureServer* texture_server = nullptr;
 
 	public:
 
@@ -137,16 +134,15 @@ class Manager
 			return texture_server;
 		}
 
-		void update() {
-			for (auto& o : objects) o->update();
+		void begin() {
+			for (auto& o : objects) o->begin();
 		}
-		void draw() {
-			for (auto& o : objects) {
-				for (auto& o : objects) {
-					o->draw();
-				}
-			}
+
+		void tick(float deltaTime) {
+			for (auto& o : objects) o->tick(deltaTime);
 		}
+
+
 		void refresh(){
 			objects.erase(std::remove_if(std::begin(objects), std::end(objects), 
 				[](const std::unique_ptr<Object>& mObject)
@@ -170,10 +166,3 @@ class Manager
 
 
 
-RenderServer* Component::get_render_server() {
-	return get_object()->get_manager()->get_render_server(); 
-}
-
-TextureServer* Component::get_texture_server(){
-	return get_object()->get_manager()->get_texture_server();
-}

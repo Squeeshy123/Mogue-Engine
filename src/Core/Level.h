@@ -10,10 +10,12 @@
 class Level
 {
 	public:
-		Manager* manager;
+		Manager* manager = nullptr;
 		
 		Level();
 		Level(RenderServer* render_server, TextureServer* texture_server);
+
+		Object& add_object();
 
 		virtual void begin();
 		virtual void tick(float deltaTime);

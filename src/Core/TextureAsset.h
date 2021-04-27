@@ -10,6 +10,7 @@ class TextureAsset :
 {
     public:
         TextureAsset(TextureServer* mtexture_manager, std::string path);
+        ~TextureAsset();
         SDL_Texture* get_texture();
         SDL_Rect* get_dimensions();
         

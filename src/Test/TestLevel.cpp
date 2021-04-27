@@ -2,12 +2,6 @@
 #include <memory>
 
 TestLevel::TestLevel() {
-	add_object();
-}
-
-
-void TestLevel::add_object() {
-	
 }
 
 void TestLevel::begin()
