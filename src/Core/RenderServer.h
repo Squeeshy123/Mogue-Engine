@@ -15,9 +15,9 @@ class RenderServer
 		~RenderServer();
 		void DrawRectangle(int x, int y, int w, int h);
 
-		void Begin();
-		void Tick();
-		void End_Tick();
+		void begin();
+		void tick();
+		void end_tick();
 
 		void add_texture_to_buffer(TextureAsset* surface);
 };

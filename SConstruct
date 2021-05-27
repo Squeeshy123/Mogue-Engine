@@ -16,7 +16,7 @@ if 'vsproj' in ARGUMENTS:
 env.Append(CPPPATH=["C:\\Users\\finnm\\Desktop\\CSCWork\\MogueEngine\\Mogue\\","C:\\Users\\finnm\\Desktop\\CSCWork\\MogueEngine\\Mogue\\src\\", 'C:\\Users\\finnm\\Desktop\\CSCWork\\Libraries\\SDL\\include\\'])
 env.Append(LIBPATH=['C:\\Users\\finnm\\Desktop\\CSCWork\\Libraries\\SDL\\lib\\'])
 env.Append(LIBS=['SDL2', 'SDL2main', 'SDL2_image'])
-
+env.Append(CXXVERSION='20')
 
 Export('env')
 

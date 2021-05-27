@@ -12,7 +12,7 @@ Level::Level(RenderServer* render_server, TextureServer* texture_server)
 	manager->set_texture_server(texture_server);
 }
 
-Object& Level::add_object() {
+Object* Level::add_object() {
 	return manager->add_object();
 }
 

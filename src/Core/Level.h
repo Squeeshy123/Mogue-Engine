@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/ECS.h"
+#include "Core/ECS.hpp"
 
 #include <vector>
 #include <SDL/SDL.h>
@@ -15,7 +15,7 @@ class Level
 		Level();
 		Level(RenderServer* render_server, TextureServer* texture_server);
 
-		Object& add_object();
+		Object* add_object();
 
 		virtual void begin();
 		virtual void tick(float deltaTime);

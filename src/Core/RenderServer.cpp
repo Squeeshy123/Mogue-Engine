@@ -33,7 +33,7 @@ void RenderServer::DrawRectangle(int x, int y, int w, int h)
 
 
 
-void RenderServer::Begin()
+void RenderServer::begin()
 {
 	renderer = SDL_CreateRenderer(mwindow, mindex, mRender_flags);
 	
@@ -43,7 +43,7 @@ void RenderServer::Begin()
 	}
 }
 
-void RenderServer::Tick()
+void RenderServer::tick()
 {
 	printf("Render ticking start!\n");
 	SDL_RenderClear(renderer);
@@ -59,7 +59,7 @@ void RenderServer::Tick()
 	printf("Render ticking End!\n");
 }
 
-void RenderServer::End_Tick()
+void RenderServer::end_tick()
 {
 	
 	SDL_SetRenderDrawColor(renderer, 114, 144, 154, 255);

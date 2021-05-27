@@ -1,5 +1,5 @@
+#include <string>
 #include <SDL/SDL.h>
-#include <vector>
 
 #include "Core/WindowServer.h"
 #include "Core/RenderServer.h"
@@ -16,6 +16,7 @@
 #include "Core/Components.h"
 
 
+
 int wmain(int argc, char* argv[]) {
 
 	
@@ -27,26 +28,28 @@ int wmain(int argc, char* argv[]) {
 		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
 	}
 
-	WindowServer* window_manager = new WindowServer("Mogue", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, SDL_WINDOW_SHOWN);
-	window_manager->Begin();
 
-	RenderServer* render_server = new RenderServer(window_manager->window, -1, SDL_RENDERER_ACCELERATED);
-	render_server->Begin();
+
+	WindowServer* window_server = new WindowServer("Mogue", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, SDL_WINDOW_SHOWN);
+	window_server->begin();
+
+	RenderServer* render_server = new RenderServer(window_server->window, -1, SDL_RENDERER_ACCELERATED);
+	render_server->begin();
 
 	UIServer* ui_server = new UIServer(render_server->renderer, 800, 800);
 
 	TextureServer* texture_server = new TextureServer(render_server);
 	
 	
-	TestLevel* currentLevel = new TestLevel();
+
+	debug();
+	Level* currentLevel = new Level(render_server, texture_server);
+	debug();
+	Object* test_obj = currentLevel->add_object();
+	debug();
+	test_obj->add_component<SpriteComponent>();
+	debug();
 	
-	Object test_obj = currentLevel->add_object();
-	
-	test_obj.addComponent<SpriteComponent>();
-
-	currentLevel->begin();
-
-
 	Uint64 NOW = SDL_GetPerformanceCounter();
 	Uint64 LAST = 0;
 	double deltaTime = 0;
@@ -66,15 +69,15 @@ int wmain(int argc, char* argv[]) {
 		SDL_Event e;
 
 		
-		window_manager->Tick();
-		render_server->Tick();
+		window_server->tick();
+		render_server->tick();
 		ui_server->tick();
 
 		currentLevel->tick(deltaTime);
 
 		while (SDL_PollEvent(&e))
 		{
-			window_manager->Input(e);
+			window_server->input(e);
 
 			if (e.type == SDL_QUIT) run = false;
 			if (e.type == SDL_WINDOWEVENT)
@@ -117,14 +120,14 @@ int wmain(int argc, char* argv[]) {
 		*/
 		
 
-		render_server->End_Tick();
+		render_server->end_tick();
 	}
 
 	
 	delete texture_server;
 	delete ui_server;
 	delete render_server;
-	delete window_manager;
+	delete window_server;
 	
 
 	return 0;

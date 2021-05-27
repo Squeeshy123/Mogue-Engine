@@ -13,7 +13,7 @@ WindowServer::~WindowServer()
 	SDL_DestroyWindow(window);
 }
 
-void WindowServer::Begin()
+void WindowServer::begin()
 {
 	if (!window)
 	{
@@ -21,12 +21,12 @@ void WindowServer::Begin()
 	}
 }
 
-void WindowServer::Tick()
+void WindowServer::tick()
 {
 	SDL_UpdateWindowSurface(window);
 }
 
-void WindowServer::Input(SDL_Event e)
+void WindowServer::input(SDL_Event e)
 {
 	
 }

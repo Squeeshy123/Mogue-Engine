@@ -8,6 +8,7 @@ RenderServer* gRenderer;
 TextureServer::TextureServer(RenderServer* renderer)
 {
     gRenderer = renderer;
+    printf("Creating Texture Server...");
 }
 
 SDL_Texture* TextureServer::load_texture(std::string path)
