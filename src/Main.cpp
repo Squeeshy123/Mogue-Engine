@@ -8,14 +8,16 @@
 
 #include "ServerManager.h"
 
+
+using namespace Mogue;
+
 static void glfw_error_callback(int error, const char* description)
 {
     printf("Glfw Error %d: %s\n", error, description);
 }
 
-using namespace Mogue;
 
-ServerManager* server_manager = server_manager->get_instance();
+ServerManager* server_manager = server_manager->get_singleton();
 
 int main(int argc, char** argv)
 {
@@ -33,7 +35,7 @@ int main(int argc, char** argv)
 
 
     // Create window with graphics context
-    if (server_manager->get_window_server()->window == NULL)
+    if (server_manager->get_window_server()->get_window() == NULL)
         return 1;
 
 
@@ -46,13 +48,13 @@ int main(int argc, char** argv)
     ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(server_manager->get_window_server()->window, true);
+    ImGui_ImplGlfw_InitForOpenGL(server_manager->get_window_server()->get_window(), true);
     ImGui_ImplOpenGL3_Init();
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop
-    while (!glfwWindowShouldClose(server_manager->get_window_server()->window))
+    while (!glfwWindowShouldClose(server_manager->get_window_server()->get_window()))
     {
         glfwPollEvents();
 
@@ -66,7 +68,7 @@ int main(int argc, char** argv)
         ImGui::Render();
 
         int display_w, display_h;
-        glfwGetFramebufferSize(server_manager->get_window_server()->window, &display_w, &display_h);
+        glfwGetFramebufferSize(server_manager->get_window_server()->get_window(), &display_w, &display_h);
         
         glViewport(0, 0, display_w, display_h);
         
@@ -76,7 +78,7 @@ int main(int argc, char** argv)
         
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        glfwSwapBuffers(server_manager->get_window_server()->window);
+        glfwSwapBuffers(server_manager->get_window_server()->get_window());
     }
 
     // Cleanup
@@ -84,7 +86,7 @@ int main(int argc, char** argv)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    glfwDestroyWindow(server_manager->get_window_server()->window);
+    glfwDestroyWindow(server_manager->get_window_server()->get_window());
     glfwTerminate();
 
     return 0;

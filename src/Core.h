@@ -1,13 +1,12 @@
 #pragma once
 
 
-#define init_singleton(classname, args) private:\
+#define init_singleton(classname, ...) private:\
 			static classname* singleton;\
 		public:\
-			static classname* get_singleton(args) {\
+			static classname* get_singleton(...) {\
 				if (!singleton)\
-					singleton = new classname(args);\
+					singleton = new classname(...);\
 				return singleton;\
 			}\
-
-			classname(args);\
+			classname(...);\
