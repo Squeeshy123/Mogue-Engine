@@ -16,7 +16,7 @@ env.Append(CPPPATH=["A:\\Desktop\\Programming\\Engine\\Mogue\\Extra\\include", "
 env.Append(LIBPATH=['A:\\Desktop\\Programming\\Engine\\Mogue\\Extra\\libs'])
 env.Append(LIBS=['opengl32','glfw3', 'glew32','User32','Gdi32','Shell32'])
 env.Append(CCFLAGS=['/clr','/NODEFAULTLIB', '/LD'])
-env.Append(CXXVERSION='99')
+env.Append(CXXVERSION='11')
 
 walk = os.walk('.\\')
 
@@ -28,12 +28,12 @@ for root, dirs, files in walk:
     for f in files:
         if f.endswith(".cpp"):
             cpps.append(path + "\\" + f)
-            print(f)
+            
         elif f.endswith(".h") or f.endswith(".hpp"):
             heads.append(path + "\\" + f)
-            print(f)
+            
         
-
+print(cpps)
 prog = env.Program(target='Mogue', source=cpps)
 
 

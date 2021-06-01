@@ -4,15 +4,26 @@
 #include <GLFW/glfw3.h>
 
 #include "Core.h"
+
 namespace Mogue {
 
     class WindowServer {
-        init_singleton(WindowServer)
-        private:
-            GLFWwindow* window = glfwCreateWindow(1280, 720, "Mogue Engine", NULL, NULL);
-        public:
-            GLFWwindow* get_window() { return window; }
+        // Singleton
+        public:									     
+			static WindowServer* get_singleton();		 
+            
+            void initialize_window();
+
+			GLFWwindow* get_window() { return window; }  
+
+		private:
+			static WindowServer* singleton;
+			WindowServer();
+
+        
+            GLFWwindow* window;
+
+           
 
     };
-
 }
