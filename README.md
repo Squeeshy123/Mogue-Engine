@@ -10,6 +10,8 @@ When building with SCons you can run `scons vsproj=1` to make a visual studio pr
 
 # Style Guide
 If you are going to commit then please follow this simple style guide:
+
+`PascalCaseFileName.cpp`:
 ```
 class PascalCaseClasses {
   int snake_case_variables = 0;
