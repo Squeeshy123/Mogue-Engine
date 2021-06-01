@@ -5,3 +5,5 @@ for a while now and now I want to know how the game engines themselves are made 
 # Building the Engine
 In order to build the engine you must have [SCons](https://scons.org) and the [GLFW](https://sourceforge.net/projects/glew/files/latest/download) and [GLEW](https://www.glfw.org) include files and libs
 change the paths to the include and libs in the SConstruct file.
+
+When building with SCons you can run `scons vsproj=1` to make a visual studio project for mogue. (it doesn't work too well though, so proceed with caution)
