@@ -75,3 +75,4 @@ ipch/
 *.VC.opendb
 *.VC.VC.opendb
 enc_temp_folder/
+.sconsign.dblite

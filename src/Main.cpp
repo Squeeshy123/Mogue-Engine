@@ -8,17 +8,19 @@
 
 #include "Core.h"
 
-#include "ServerManager.h"
+#include "Servers/ServerManager.h"
+#include "WorldManager.h"
 
 using namespace Mogue;
 
 ServerManager* server_manager;
-
-
+WorldManager* world_manager;
 
 int main(int argc, char** argv)
 {
     server_manager = ServerManager::get_singleton();
+    world_manager = WorldManager::get_singleton();
+
     glewExperimental = true;
     if( !glfwInit() )
     {
@@ -32,28 +34,37 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    if (server_manager->get_window_server() != nullptr){
-        server_manager->get_window_server()->initialize_window();
+    if (server_manager->validate_servers()){
+        server_manager->initialize();
+
         if (glewInit() != GLEW_OK) {
             Mogue::Error("Failed to initialize GLEW");
-            //return -1;
+            return -1;
         }
+
     }
     else {
-        Mogue::Error("Window server is null.");
+        Mogue::Error("Some server was not created.");
         return -1;
     }
 
     glfwSetInputMode(server_manager->get_window_server()->get_window(), GLFW_STICKY_KEYS, GL_TRUE);
 
-    do{
+    world_manager->begin();
+
+    // TICK FUNCTION
+    while(WindowServer::get_singleton()->is_running && !glfwWindowShouldClose(WindowServer::get_singleton()->get_window()))
+    {
         glClear( GL_COLOR_BUFFER_BIT );
 
-
-        glfwSwapBuffers(server_manager->get_window_server()->get_window());
-        glfwPollEvents();
+        server_manager->tick();
+        world_manager->tick();
+        
+        
+        world_manager->end_tick();
     }
-    while( glfwGetKey(server_manager->get_window_server()->get_window(), GLFW_KEY_ESCAPE ) != GLFW_PRESS && glfwWindowShouldClose(server_manager->get_window_server()->get_window()) == 0 );
+    world_manager->end();
 
+    delete server_manager;
     return 0;
 }

@@ -1,39 +1,69 @@
 #pragma once
+
 #include <vector>
 #include <memory>
+
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include "Core.h"
+#include "Servers/InputServer.h"
 
 class Component;
 class Object;
 class Level;
 
+namespace Mogue {
+	class Component {
+		private:
+			std::shared_ptr<Object> owner;
 
-class Component {
-	private:
-		std::shared_ptr<Object> owner;
+		public:
+			bool is_enabled;
 
-	public:
-		virtual void tick(float dT);
-		virtual void begin();
-		virtual void input();
-};
+			virtual void tick(float deltaTime);
+			virtual void begin();
+			virtual void input(InputEvent event);
+			virtual void end_tick();
+			virtual void end();
 
-class Object {
+			void set_owner(std::shared_ptr<Object> obj);
+			std::shared_ptr<Object> get_owner();
+	};
 
-	std::vector<std::shared_ptr<Component>> components;
+	class Object {
+		private:
+			std::vector<std::shared_ptr<Component>> components;
 
-	template <class ComponentType, typename... Args>
-	std::shared_ptr<ComponentType> add_component(Args&&... args);
+		public:
+			bool is_enabled;
 
-};
+			template <class ComponentType, typename... Args>
+			std::shared_ptr<ComponentType> add_component(Args&&... args);
 
-class Level {
-	std::vector<std::shared_ptr<Object>> objects;
+			virtual void tick(float deltaTime);
+			virtual void begin();
+			virtual void input(InputEvent event);
+			virtual void end_tick();
+			virtual void end();
+	};
 
+	class Level {
+		private:
+			std::vector<std::shared_ptr<Object>> objects;
 
-	std::shared_ptr<Object> add_object();
+		public:
+			bool is_enabled;
 
+			std::shared_ptr<Object> add_object();
+			
+			std::shared_ptr<Object> get_object(int index);
 
-};
+			virtual void tick(float deltaTime);
+			virtual void begin();
+			virtual void input(InputEvent event);
+			virtual void end_tick();
+			virtual void end();
+	};
 
-
+}
