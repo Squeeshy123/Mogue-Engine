@@ -12,8 +12,8 @@ if 'vsproj' in ARGUMENTS:
 	vsproj = bool(ARGUMENTS['vsproj'])
 
 ##### CHANGE THESE PATHS ####
-env.Append(CPPPATH=["Put GLFW and GLEW inlcude paths here", ".\\src\\", ".\\"])
-env.Append(LIBPATH=['Put GLFW and GLEW lib paths here'])
+env.Append(CPPPATH=["A:\\Desktop\\Programming\\Engine\\OpenGL\\include", ".\\src\\", ".\\"])
+env.Append(LIBPATH=['A:\\Desktop\\Programming\\Engine\\OpenGL\\lib'])
 ##############################
 
 env.Append(LIBS=['opengl32','glfw3', 'glew32','User32','Gdi32','Shell32'])

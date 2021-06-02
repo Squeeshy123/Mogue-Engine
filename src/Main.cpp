@@ -16,7 +16,7 @@ using namespace Mogue;
 ServerManager* server_manager;
 WorldManager* world_manager;
 
-int main(int argc, char** argv)
+int main(int argc, char *argv[])
 {
     server_manager = ServerManager::get_singleton();
     world_manager = WorldManager::get_singleton();
@@ -34,6 +34,11 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    // Load scene from argument, or load editor with -e
+    if (argv[1] == "-e") {
+        world_manager->load_scene();
+    }
+
     if (server_manager->validate_servers()){
         server_manager->initialize();
 
@@ -49,7 +54,7 @@ int main(int argc, char** argv)
     }
 
     glfwSetInputMode(server_manager->get_window_server()->get_window(), GLFW_STICKY_KEYS, GL_TRUE);
-
+    
     world_manager->begin();
 
     // TICK FUNCTION
@@ -58,13 +63,13 @@ int main(int argc, char** argv)
         glClear( GL_COLOR_BUFFER_BIT );
 
         server_manager->tick();
-        world_manager->tick();
-        
+        world_manager->tick(0.1f);
         
         world_manager->end_tick();
     }
     world_manager->end();
 
+    delete world_manager;
     delete server_manager;
     return 0;
 }

@@ -11,7 +11,7 @@
 
 class Component;
 class Object;
-class Level;
+class Scene;
 
 namespace Mogue {
 	class Component {
@@ -27,19 +27,27 @@ namespace Mogue {
 			virtual void end_tick();
 			virtual void end();
 
-			void set_owner(std::shared_ptr<Object> obj);
-			std::shared_ptr<Object> get_owner();
+			void set_owner(std::shared_ptr<Object> obj) { owner = obj; }
+			std::shared_ptr<Object> get_owner() { return owner; }
 	};
 
 	class Object {
 		private:
 			std::vector<std::shared_ptr<Component>> components;
+			std::vector<std::shared_ptr<Object>> children;
 
 		public:
 			bool is_enabled;
 
 			template <class ComponentType, typename... Args>
 			std::shared_ptr<ComponentType> add_component(Args&&... args);
+
+			template <class ComponentType>
+			void remove_component(ComponentType component);
+			void remove_component(int index);
+
+			void add_child(Object child);
+			std::shared_ptr<Object> get_child(int index);
 
 			virtual void tick(float deltaTime);
 			virtual void begin();
@@ -48,7 +56,7 @@ namespace Mogue {
 			virtual void end();
 	};
 
-	class Level {
+	class Scene {
 		private:
 			std::vector<std::shared_ptr<Object>> objects;
 

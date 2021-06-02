@@ -1,28 +1,50 @@
 #include "WorldManager.h"
 
 namespace Mogue {
+
+    WorldManager* WorldManager::singleton = nullptr;
     WorldManager* WorldManager::get_singleton() {
-		if(WorldManager::singleton != nullptr){
-			return WorldManager::singleton;
-		} else {
+		if(WorldManager::singleton == nullptr){
 			WorldManager::singleton = new WorldManager();
-			return WorldManager::singleton;
 		}
+        return WorldManager::singleton;
 	}
 
+    void WorldManager::load_scene(Scene* scene_to_load) {
+        
+    }
+
     void WorldManager::begin() {
+        if (current_level != nullptr) {
         current_level->begin();
+        }
     }
     void WorldManager::tick(float deltaTime) {
-        current_level->tick(deltaTime);
+        if (current_level != nullptr) {
+            current_level->tick(deltaTime);
+        }
     }
     void WorldManager::input(InputEvent event) {
-        current_level->input(event);
+        if (current_level != nullptr) {
+            current_level->input(event);
+        }
     }
     void WorldManager::end_tick() {
-        current_level->end_tick();
+        if (current_level != nullptr) {
+            current_level->end_tick();
+        }
     }
     void WorldManager::end() {
-        current_level->end();
+        if (current_level != nullptr) {
+            current_level->end();
+        }
     }
+
+    WorldManager::WorldManager() {
+		WorldManager::singleton = this;
+	}
+    WorldManager::~WorldManager() {
+        
+    }
+
 }

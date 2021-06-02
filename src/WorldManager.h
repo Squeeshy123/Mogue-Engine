@@ -8,9 +8,9 @@ namespace Mogue {
         public:
             static WorldManager* get_singleton();
 
-            std::unique_ptr<Level> current_level;
+            std::unique_ptr<Scene> current_level;
 
-            ~WorldManager();
+            void load_scene(Scene* scene_to_load);
 
             void begin();
             void tick(float deltaTime);
@@ -18,7 +18,7 @@ namespace Mogue {
             void end_tick();
             void end();
         
-
+            ~WorldManager();
 		private:
 			static WorldManager *singleton;
 
