@@ -55,10 +55,17 @@ int main(int argc, char *argv[])
 
     glfwSetInputMode(server_manager->get_window_server()->get_window(), GLFW_STICKY_KEYS, GL_TRUE);
 
-    std::string scene_arg(argv[1]);
-    if (scene_arg == "-e") {
-        Mogue::Log("Loading Editor...");
-        world_manager->load_scene<Editor>();
+    if (argc > 0){
+        std::string scene_arg(argv[1]);
+        
+        if (scene_arg == "-e") {
+            Mogue::Log("Loading Editor...");
+            world_manager->load_scene<Editor>();
+        }
+        else if (scene_arg == "-s" && argc > 1) {
+            std::string scene_path(argv[2]);
+            // Load scene path here (Requires scene serialisation system!)
+        }
     }
 
     world_manager->begin();

@@ -64,7 +64,7 @@ namespace Mogue {
 
 			void add_child(Object child);
 			std::shared_ptr<Object> get_child(int index);
-			std::vector<std::shared_ptr<Component>> get_children() {
+			std::vector<std::shared_ptr<Object>> get_children() {
 				return children;
 			}
 

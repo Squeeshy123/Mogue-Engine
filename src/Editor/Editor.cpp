@@ -1,19 +1,29 @@
 #include "Editor.h"
 
 #include "Servers/WindowServer.h"
+#include "ECS.h"
 
 using namespace Mogue;
 
 GLFWwindow* window = nullptr;
 
-void show_objects_children(Object* obj){
+ImGuiTreeNodeFlags scene_hierarchy_flags = ImGuiTreeNodeFlags_OpenOnArrow;
+static bool align_label_with_current_x_position = false;
+static bool test_drag_and_drop = false;
+
+
+void show_objects_children(Mogue::Object* obj){
     for(auto& child_object : obj->get_children()) {
-        if(ImGui::CollapsingHeader(obj->get_name().c_str())){
-            show_objects_children(obj);
+        if(ImGui::TreeNodeEx(child_object->get_name().c_str(), scene_hierarchy)){
+            show_objects_children(child_object.get());
         }
+        ImGui::TreePop();
     }
 }
 
+void Editor::begin() {
+
+}
 
 void Editor::tick(float deltaTime){
     Scene* current_scene = get_world_manager()->get_scene(0);
@@ -36,10 +46,15 @@ void Editor::tick(float deltaTime){
             }
         }
         else {
-            if(ImGui::BeginListBox("Objects")){
+            if(ImGui::BeginListBox("Scene Objects")){
+                Mogue::Log("Check 1");
                 for(auto& obj : current_scene->get_objects()) {
-                    if (ImGui::CollapsingHeader(obj->get_name().c_str())) {
-                        
+                    Mogue::Log("Check 2");
+                        if (ImGui::TreeNodeEx(obj->get_name().c_str(), scene_hierarchy_flags)) {
+                            Mogue::Log("Check 3");
+                            show_objects_children(obj.get());
+                        }
+                        ImGui::TreePop();
                     }
                 }
                 ImGui::EndListBox();
@@ -48,7 +63,7 @@ void Editor::tick(float deltaTime){
         
         ImGui::End();
     }
-}
+
 
 void Editor::end_tick(){
     
