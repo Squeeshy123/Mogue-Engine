@@ -2,7 +2,6 @@
 #include "Core.h"
 
 #include "Servers/WindowServer.h"
-
 #include "Servers/InputServer.h"
 
 namespace Mogue {

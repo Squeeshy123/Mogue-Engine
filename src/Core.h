@@ -8,4 +8,8 @@ namespace Mogue {
 		std::string final = "Error: " + error + "\n";
 		printf(final.c_str());
 	}
+	inline void Log(std::string string) {
+		std::string final = "Engine Log: " + string + "\n";
+		printf(final.c_str());
+	}
 }

@@ -50,6 +50,7 @@ namespace Mogue {
 	std::shared_ptr<Object> Scene::add_object() {
 		std::shared_ptr<Object> o = std::make_shared<Object>();
 		o->is_enabled = true;
+		o->set_name("Object" + std::to_string(objects.size()));
 		objects.push_back(o);
 		return o;
 	}

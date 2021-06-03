@@ -1,4 +1,7 @@
 #include "WorldManager.h"
+#include "ECS.h"
+
+#include <string>
 
 namespace Mogue {
 
@@ -9,34 +12,42 @@ namespace Mogue {
 		}
         return WorldManager::singleton;
 	}
-
-    void WorldManager::load_scene(Scene* scene_to_load) {
-        
-    }
+    
+    
 
     void WorldManager::begin() {
-        if (current_level != nullptr) {
-        current_level->begin();
+        for(auto& scene : active_scenes){
+            if (scene != nullptr) {
+                scene->begin();
+            }
         }
     }
     void WorldManager::tick(float deltaTime) {
-        if (current_level != nullptr) {
-            current_level->tick(deltaTime);
+        for(auto& scene : active_scenes){
+            if (scene != nullptr) {
+                scene->tick(deltaTime);
+            }
         }
     }
     void WorldManager::input(InputEvent event) {
-        if (current_level != nullptr) {
-            current_level->input(event);
+        for(auto& scene : active_scenes){
+            if (scene != nullptr) {
+                scene->input(event);
+            }
         }
     }
     void WorldManager::end_tick() {
-        if (current_level != nullptr) {
-            current_level->end_tick();
+        for(auto& scene : active_scenes){
+            if (scene != nullptr) {
+                scene->end_tick();
+            }
         }
     }
     void WorldManager::end() {
-        if (current_level != nullptr) {
-            current_level->end();
+        for(auto& scene : active_scenes){
+            if (scene != nullptr) {
+                scene->end();
+            }
         }
     }
 
