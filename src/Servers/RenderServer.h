@@ -1,4 +1,8 @@
 #pragma once
+#include "Rendering/RenderingDevice.h"
+#include "Rendering/OpenGLRenderDevice.h"
+
+#include <memory>
 
 class RenderServer {
     // Singleton
@@ -11,9 +15,10 @@ class RenderServer {
             ~RenderServer();
 		private:
 			static RenderServer* singleton;
-			
-            GLFWwindow* window;
-        
+		
+            std::unique_ptr<RenderDevice> active_render_device;
             
-            RenderServer();
-}
+            RenderServer() {
+                active_render_device = std::make_unique<OpenGLRenderDevice>();
+            }
+};
