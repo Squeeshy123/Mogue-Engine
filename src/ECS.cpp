@@ -19,32 +19,55 @@ namespace Mogue {
 		for(auto& c : components) 
 			if (c->is_enabled) 
 				c->begin();
+		for(auto& o : children) 
+			if (o->is_enabled) 
+				o->begin();
 	}
 
 	void Object::tick(float deltaTime) {
 		for(auto& c : components) 
 			if (c->is_enabled) 
 				c->tick(deltaTime);
+		for(auto& o : children) 
+			if (o->is_enabled) 
+				o->tick(deltaTime);
 	}
 
 	void Object::input(InputEvent event) {
 		for(auto& c : components) 
 			if (c->is_enabled) 
 				c->input(event);
+		for(auto& o : children) 
+			if (o->is_enabled) 
+				o->input(event);
 	}
 
 	void Object::end_tick() {
 		for(auto& c : components)
 			if (c->is_enabled)
 				c->end_tick();
+		for(auto& o : children) 
+			if (o->is_enabled) 
+				o->end_tick();
 	}
 
 	void Object::end(){
 		for(auto& c : components)
 			if (c->is_enabled)
 				c->end();
+		for(auto& o : children) 
+			if (o->is_enabled) 
+				o->end();
 	}
 
+
+	std::shared_ptr<Object> Object::create_child() {
+		std::shared_ptr<Object> o = std::make_shared<Object>();
+		o->is_enabled = true;
+		o->set_name("Object" + std::to_string(children.size()));
+		children.push_back(o);
+		return o;
+	}
 
 	// Scene
 	std::shared_ptr<Object> Scene::add_object() {

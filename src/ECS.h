@@ -30,7 +30,7 @@ namespace Mogue {
 			virtual void end_tick();
 			virtual void end();
 
-			void set_owner(std::shared_ptr<Object> obj) { owner = obj; }
+			void set_owner(Object* obj) { owner = std::make_shared; }
 			std::shared_ptr<Object> get_owner() { return owner; }
 	};
 
@@ -52,7 +52,17 @@ namespace Mogue {
 			}
 
 			template <class ComponentType, typename... Args>
-			std::shared_ptr<ComponentType> add_component(Args&&... args);
+			std::shared_ptr<ComponentType> add_component(Args&&... args) {
+				std::shared_ptr<ComponentType> c = std::make_shared<ComponentType>();
+				c->set_owner(this);
+				components.push_back(c);
+				return c;
+			}
+
+			template <class ComponentType>
+			std::shared_ptr<ComponentType> get_component() {
+
+			}
 
 			template <class ComponentType>
 			void remove_component(ComponentType component);
@@ -63,6 +73,7 @@ namespace Mogue {
 			}
 
 			void add_child(Object child);
+			std::shared_ptr<Object> create_child();
 			std::shared_ptr<Object> get_child(int index);
 			std::vector<std::shared_ptr<Object>> get_children() {
 				return children;
