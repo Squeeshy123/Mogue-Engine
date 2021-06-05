@@ -7,6 +7,7 @@ namespace Mogue {
 
 	WindowServer* window_server = WindowServer::get_singleton();
 	InputServer*  input = InputServer::get_singleton();
+	RenderServer* render_server = RenderServer::get_singleton();
 
 
 	ServerManager* ServerManager::get_singleton() {
@@ -21,7 +22,8 @@ namespace Mogue {
 	bool ServerManager::validate_servers(){
 		bool input_valid = input != nullptr;
 		bool window_valid = window_server != nullptr;
-		return input_valid && window_valid;
+		bool renderer_valid = render_server != nullptr;
+		return input_valid && window_valid && renderer_valid;
 	}
 
 	WindowServer* ServerManager::get_window_server() {
@@ -34,11 +36,13 @@ namespace Mogue {
 	void ServerManager::initialize(){
 		window_server->initialize();
 		input->initialize();
+		render_server->initialize();
 	}
 
 	void ServerManager::tick(){
 		window_server->tick();
 		input->tick();
+		render_server->tick();
 	}
 
 
@@ -48,11 +52,12 @@ namespace Mogue {
 		ServerManager::singleton = this;
 		window_server = WindowServer::get_singleton();
 		input         = InputServer::get_singleton();
+		render_server = RenderServer::get_singleton();
 	}
 
 	ServerManager::~ServerManager() {
 		delete input;
-		//Clear render server memory here.
+		delete render_server;
 		delete window_server;
 	}
 

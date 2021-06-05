@@ -33,12 +33,12 @@ namespace Mogue {
                         return active_scenes[index].get();
                     } 
                     else {
-                        Error("Scene does not exist");
+                        Warning("Scene does not exist");
                         return nullptr;
                     }
                 } 
                 else {
-                    Error("Scene Index out of range");
+                    Warning("Scene Index out of range");
                     return nullptr;
                 }
             }

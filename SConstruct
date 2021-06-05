@@ -17,7 +17,7 @@ env.Append(LIBPATH=['A:\\Desktop\\Programming\\Engine\\OpenGL\\lib'])
 ##############################
 
 env.Append(LIBS=['opengl32','glfw3', 'glew32','User32','Gdi32','Shell32'])
-env.Append(CCFLAGS=['/clr','/NODEFAULTLIB', '/LD'])
+env.Append(CCFLAGS=['/clr', '/LD', ])
 env.Append(CXXVERSION='11')
 
 walk = os.walk('.\\')

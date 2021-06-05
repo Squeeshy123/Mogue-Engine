@@ -28,6 +28,7 @@ namespace Mogue{
     }
 
     void InputServer::initialize(){
+        glfwSetInputMode(ServerManager::get_window_server()->get_window(), GLFW_STICKY_KEYS, GL_TRUE);
         glfwSetKeyCallback(WindowServer::get_singleton()->get_window(), &InputServer::key_callback);
     }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <vector>
 #include <memory>
 
@@ -30,7 +31,7 @@ namespace Mogue {
 			virtual void end_tick();
 			virtual void end();
 
-			void set_owner(Object* obj) { owner = std::make_shared; }
+			void set_owner(Object* obj);
 			std::shared_ptr<Object> get_owner() { return owner; }
 	};
 

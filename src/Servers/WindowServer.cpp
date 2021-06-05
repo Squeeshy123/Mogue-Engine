@@ -18,6 +18,12 @@ namespace Mogue {
         window = glfwCreateWindow(1280, 720, "Mogue Engine", NULL, NULL);
         is_running = true;
 
+        glfwWindowHint(GLFW_SAMPLES, 2); // Anti Aliasing
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+
         if( window == NULL ){
             Mogue::Error( "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the Open GL 2.1." );
             glfwTerminate();

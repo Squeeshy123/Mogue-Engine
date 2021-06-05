@@ -3,17 +3,12 @@
 namespace Mogue {
 
 	//Component
-
+	void set_owner(Object* obj) {
+		
+	}
 
 
 	// Object
-	template<class ComponentType, typename ...Args>
-	inline std::shared_ptr<ComponentType> Object::add_component(Args&&... p_args) {
-		std::shared_ptr<ComponentType> c = std::make_shared<ComponentType>(std::forward(p_args));
-		c->set_owner(std::make_shared(this));
-		return c;
-	}
-
 
 	void Object::begin() {
 		for(auto& c : components) 

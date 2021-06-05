@@ -1,24 +1,30 @@
 #pragma once
-#include "Rendering/RenderingDevice.h"
+#include "Core.h"
+
+#include "Rendering/RenderDevice.h"
 #include "Rendering/OpenGLRenderDevice.h"
 
 #include <memory>
 
-class RenderServer {
-    // Singleton
-        public:					     
-			static RenderServer* get_singleton();
+namespace Mogue {
+    class RenderServer {
+        // Singleton
+            public:					     
+                static RenderServer* get_singleton();
 
-            void initialize();
-            void tick();
+                void initialize();
+                void tick();
+                
+                ~RenderServer() {
+
+                }
+            private:
+                static RenderServer* singleton;
             
-            ~RenderServer();
-		private:
-			static RenderServer* singleton;
-		
-            std::unique_ptr<RenderDevice> active_render_device;
-            
-            RenderServer() {
-                active_render_device = std::make_unique<OpenGLRenderDevice>();
-            }
-};
+                std::unique_ptr<RenderDevice> render_device;
+                
+                RenderServer() {
+                    render_device  = Mogue::make_unique<OpenGLRenderDevice>();
+                }
+    };
+}
