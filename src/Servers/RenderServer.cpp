@@ -29,4 +29,9 @@ namespace Mogue {
             render_device->render();
         }
     }
+    void RenderServer::end_tick(){
+        if (tick_device) {
+            render_device->end_render();
+        }
+    }
 }

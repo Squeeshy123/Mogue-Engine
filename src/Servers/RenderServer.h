@@ -14,6 +14,7 @@ namespace Mogue {
 
                 void initialize();
                 void tick();
+                void end_tick();
                 
                 ~RenderServer() {
 

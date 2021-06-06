@@ -45,7 +45,9 @@ namespace Mogue {
 		render_server->tick();
 	}
 
-
+	void ServerManager::end_tick() {
+		render_server->end_tick();
+	}
 
 
 	ServerManager::ServerManager() {
