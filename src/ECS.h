@@ -13,12 +13,16 @@
 #include "Servers/InputServer.h"
 #include "WorldManager.h"
 
+#define init_component(comp_name, comp_id) private: const static int id = comp_id; public: comp_name() = default; static int get_id() { return id; }
+
 class Component;
 class Object;
 class Scene;
 
 namespace Mogue {
 	class Component {
+		init_component(Component, 0)
+
 		private:
 			std::shared_ptr<Object> owner;
 
@@ -31,7 +35,7 @@ namespace Mogue {
 			virtual void end_tick();
 			virtual void end();
 
-			void set_owner(Object* obj);
+			void set_owner(Object* obj) {owner = std::make_shared<Object>(obj);}
 			std::shared_ptr<Object> get_owner() { return owner; }
 	};
 
@@ -62,7 +66,11 @@ namespace Mogue {
 
 			template <class ComponentType>
 			std::shared_ptr<ComponentType> get_component() {
-
+				for(auto& comp : components) {
+					if (comp->get_id() == ComponentType::get_id()) {
+						return comp;
+					}
+				}
 			}
 
 			template <class ComponentType>

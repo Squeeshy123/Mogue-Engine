@@ -8,6 +8,12 @@
 #include "ECS.h"
 using namespace Mogue;
 
+template<class ComponentType>
+struct ComponentToAdd {
+    std::string name;
+    ComponentType c;
+};
+
 class Editor : public Mogue::Scene {
     public:
         Editor();

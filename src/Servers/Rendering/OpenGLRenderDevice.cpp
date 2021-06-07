@@ -9,40 +9,64 @@
 
 GLFWwindow* current_window;
 
-GLfloat vertices[] = {
-	    0.0,  0.8,
-	   -0.8, -0.8,
-	    0.8, -0.8,
+static int compile_shader(unsigned int type, const std::string& source) {
+    unsigned int id = glCreateShader(type);
+    const char* src = source.c_str();
+    glShaderSource(id, 1, &src, nullptr);
+    glCompileShader(id);
+
+    int status;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &status);
+
+    if (status = GL_FALSE) {
+        int length;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+        char* message = (char*)alloca(length * sizeof(char));
+
+        glGetShaderInfoLog(id, length, &length, message);
+
+        std::string smessage(message);
+
+        Mogue::Warning((std::string)(type == GL_VERTEX_SHADER ? "Vertex" : "Fragment") + " Shader compilation failed! Error message: " + smessage);
+        glDeleteShader(id);
+        return 0;
+    }
+
+    return id;
+}
+static unsigned int create_shader(const std::string& vertex_shader, const std::string& fragment_shader) {
+    unsigned int program = glCreateProgram();
+    unsigned int vs = compile_shader(GL_VERTEX_SHADER, vertex_shader);
+    unsigned int fs = compile_shader(GL_FRAGMENT_SHADER, fragment_shader);
+
+    glAttachShader(program, vs);
+    glAttachShader(program, fs);
+
+    glLinkProgram(program);
+    glValidateProgram(program);
+
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+
+    return program;
+}
+
+unsigned int buffer;
+
+std::shared_ptr<RenderObject> OpenGLRenderDevice::add_render_object(RenderObject* robj){
+    std::shared_ptr<RenderObject> render_object(robj);
+    render_objects.push_back(render_object);
+
+    return render_object;
+}
+
+
+float verts[8] = {
+    -0.5f, -0.5f,
+     0.0f,  0.5f,
+     0.5f, -0.5f,
+     1.0f, 1.0f
 };
-
-GLuint shaderProgram;
-GLuint fragmentShader;
-GLuint vertexShader;
-
-const char* vertexSource = R"glsl(
-    #version 330 core
-
-    in vec2 position;
-
-    void main()
-    {
-        gl_Position = vec4(position, 0.0, 1.0);
-    }
-    )glsl";
-const char* fragmentSource = R"glsl(
-    #version 330 core
-
-    out vec4 outColor;
-
-    void main()
-    {
-        outColor = vec4(1.0, 1.0, 1.0, 1.0);
-    }
-    )glsl";
-
-GLuint ebo;
-GLuint vbo;
-GLuint vao;
 
 bool OpenGLRenderDevice::load_resources() {
     if (glewInit() != GLEW_OK) {
@@ -50,97 +74,57 @@ bool OpenGLRenderDevice::load_resources() {
     } else {
         Mogue::Log("Initialized GLEW");
     }
-    // Create Vertex Array Object
     
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    add_render_object(new RenderObject());
 
-    // Create a Vertex Buffer Object and copy the vertex data to it
+    std::string vshader = 
+    "#version 330 core\n"
+    ""
+    "layout(location = 0) in vec4 pos;\n"
+    "void main() {\n"
+    "gl_Position = pos;\n"
+    "}";
+
+    std::string fshader = 
+    "#version 330 core\n"
+    "layout(location = 0) out vec4 col;\n"
+    "void main() {\n"
+    "col = vec4(0.0, 1.0, 0.0, 1.0)\n"
+    "}";
+
     
-    glGenBuffers(1, &vbo);
-
-    GLfloat vertices[] = {
-        -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
-         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // Top-right
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
-        -0.5f, -0.5f, 1.0f, 1.0f, 1.0f  // Bottom-left
-    };
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // Create an element array
-    
-    glGenBuffers(1, &ebo);
-
-    GLuint elements[] = {
-        0, 1, 2,
-        2, 3, 0
-    };
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-
-    // Create and compile the vertex shader
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexSource, NULL);
-    glCompileShader(vertexShader);
-
-    // Create and compile the fragment shader
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
-    glCompileShader(fragmentShader);
-
-    // Link the vertex and fragment shader into a shader program
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glBindFragDataLocation(shaderProgram, 0, "outColor");
-    glLinkProgram(shaderProgram);
-    glUseProgram(shaderProgram);
-
-    // Specify the layout of the vertex data
-    GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
-
-    GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
-    glEnableVertexAttribArray(colAttrib);
-    glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
-
+    unsigned int shader = create_shader(vshader, fshader);
+    glUseProgram(shader);
 
 	return true;
 }
 
 void OpenGLRenderDevice::render() {
-    /* Clear the background as white */
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
     
-    
-    glClearColor(1.0, 1.0, 1.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	
+    for(auto& render_object : render_objects) {
+        float* vert = &render_object->verticies[0];
+
+        glGenBuffers(1, &buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), vert, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * render_object->render_method, 0);
+    }
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
     
 }
 
 void OpenGLRenderDevice::end_render(){
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    
 }
 
 void OpenGLRenderDevice::unload_resources() {
-    glDeleteProgram(shaderProgram);
-    glDeleteShader(fragmentShader);
-    glDeleteShader(vertexShader);
 
-    glDeleteBuffers(1, &ebo);
-    glDeleteBuffers(1, &vbo);
-
-    glDeleteVertexArrays(1, &vao);
 }
 
 OpenGLRenderDevice::OpenGLRenderDevice() {

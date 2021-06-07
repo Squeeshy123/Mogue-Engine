@@ -54,6 +54,7 @@ namespace Mogue {
     WorldManager::WorldManager() {
 		WorldManager::singleton = this;
 	}
+    
     WorldManager::~WorldManager() {
         
     }

@@ -11,7 +11,6 @@
 
 void glfw_onError(int error, const char* description)
 {
-
     Mogue::Error("");
 }
 
@@ -20,6 +19,11 @@ using namespace Mogue;
 
 ServerManager* server_manager;
 WorldManager* world_manager;
+
+void load_editor(){
+    Mogue::Log("Loading Editor...");
+    world_manager->load_scene<Editor>();
+}
 
 int main(int argc, char *argv[])
 {
@@ -41,27 +45,33 @@ int main(int argc, char *argv[])
 
     if (server_manager->validate_servers()){
         server_manager->initialize();
-
-        
     }
     else {
-        Mogue::Error("Some server was not created.");
+        Mogue::Error("A server was not created.");
     }
 
     
-
     // Load scene from argument, or load editor with -e
     if (argc > 0){
         std::string scene_arg(argv[1]);
         
         if (scene_arg == "-e") {
-            Mogue::Log("Loading Editor...");
-            world_manager->load_scene<Editor>();
+            load_editor();
         }
         else if (scene_arg == "-s" && argc > 1) {
             std::string scene_path(argv[2]);
             // Load scene path here (Requires scene serialisation system!)
         }
+        else {
+            Mogue::Log("Usage: <command> [parameters]");
+            Mogue::Log("Commands: ");
+            Mogue::Log("-e : Loads the editor");
+            Mogue::Log("-s : Loads a specific scene");
+        }
+        
+    }
+    else {
+        load_editor();
     }
 
     world_manager->begin();
@@ -69,16 +79,22 @@ int main(int argc, char *argv[])
     // TICK FUNCTION
     while(WindowServer::get_singleton()->is_running && !glfwWindowShouldClose(WindowServer::get_singleton()->get_window()))
     {
-        
-        
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
         server_manager->tick();
 
         world_manager->tick(0.1f);
         
-        glClear( GL_COLOR_BUFFER_BIT );
+        ImGui::Render();
 
         world_manager->end_tick();
         server_manager->end_tick();
+
+        
+        ImGui::EndFrame();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
     world_manager->end();
 

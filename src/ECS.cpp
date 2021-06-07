@@ -3,9 +3,7 @@
 namespace Mogue {
 
 	//Component
-	void set_owner(Object* obj) {
-		
-	}
+	
 
 
 	// Object

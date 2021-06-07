@@ -2,6 +2,11 @@
 
 #include "Servers/WindowServer.h"
 #include "ECS.h"
+#include "Components.h"
+
+#include <vector>
+
+#define callfunc(func, ...) func(__VA_ARGS__)
 
 using namespace Mogue;
 
@@ -11,11 +16,19 @@ ImGuiTreeNodeFlags scene_hierarchy_flags = ImGuiTreeNodeFlags_OpenOnArrow;
 static bool align_label_with_current_x_position = false;
 static bool test_drag_and_drop = false;
 
+static int selection_mask = (1 << 2);
+int current_obj = -1;
+
+std::vector<ComponentToAdd> Components = {
+    ComponentToAdd<TransformComponent3D>{"C"}
+};
 
 void show_objects_children(Mogue::Object* obj){
-    for(auto& child_object : obj->get_children()) {
-        if(ImGui::TreeNodeEx(child_object->get_name().c_str(), scene_hierarchy_flags)){
-            show_objects_children(child_object.get());
+    std::vector<std::shared_ptr<Mogue::Object>> child_objects = obj->get_children();
+    for(int o = 0; o<obj->get_children().size(); o++ ) {
+        scene_hierarchy_flags = ((o == current_obj) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+        if(ImGui::TreeNodeEx(child_objects[o]->get_name().c_str(), scene_hierarchy_flags)){
+            show_objects_children(child_objects[o].get());
             ImGui::TreePop();
         }
     }
@@ -26,8 +39,7 @@ void Editor::begin() {
 
 }
 
-static int selection_mask = (1 << 2);
-int current_obj = -1;
+
 
 void Editor::tick(float deltaTime){
     Scene* current_scene = get_world_manager()->get_scene(0);
@@ -41,10 +53,10 @@ void Editor::tick(float deltaTime){
     }
 
     Mogue::Object* selected_obj;
+    if (current_obj != -1) selected_obj = objs[current_obj].get();
+    //ImGui::ShowDemoWindow();
 
-    ImGui::ShowDemoWindow();
 
-    
     { // Scene Editor (Just a debug window for now)
         ImGui::Begin("Scene Editor");
         if (current_scene != nullptr){
@@ -62,7 +74,7 @@ void Editor::tick(float deltaTime){
         ImGui::End();
     }
 
-    { // Scene Hierarchy
+    { // Scene Hierarchy TODO: Rewrite for child object support.
         ImGui::Begin("Scene Hierarchy", new bool(true), ImGuiWindowFlags_NoCollapse);
         
         if (current_scene != nullptr) {
@@ -117,6 +129,7 @@ void Editor::tick(float deltaTime){
                 
                 if (ImGui::BeginPopup("Add Component")){
                     
+                    ImGui::EndPopup();
                 }
 
                 

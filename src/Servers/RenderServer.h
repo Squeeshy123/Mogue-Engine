@@ -8,7 +8,8 @@
 
 namespace Mogue {
     class RenderServer {
-        // Singleton
+            private:
+                std::unique_ptr<RenderDevice> render_device;
             public:					     
                 static RenderServer* get_singleton();
 
@@ -16,13 +17,15 @@ namespace Mogue {
                 void tick();
                 void end_tick();
                 
+                std::unique_ptr<RenderDevice> get_render_device();
+
                 ~RenderServer() {
 
                 }
             private:
                 static RenderServer* singleton;
             
-                std::unique_ptr<RenderDevice> render_device;
+                
                 
                 RenderServer() {
                     render_device  = Mogue::make_unique<OpenGLRenderDevice>();

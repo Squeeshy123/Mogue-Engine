@@ -11,6 +11,9 @@ namespace Mogue {
         return RenderServer::singleton;
     }
 
+    std::unique_ptr<RenderDevice> RenderServer::get_render_device() 
+    { return render_device; }
+
     void RenderServer::initialize() {
         if (render_device != nullptr){
             if (render_device->load_resources()) {
