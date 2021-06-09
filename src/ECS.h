@@ -13,7 +13,16 @@
 #include "Servers/InputServer.h"
 #include "WorldManager.h"
 
-#define init_component(comp_name, comp_id) private: const static int id = comp_id; public: comp_name() = default; static int get_id() { return id; }
+#define init_component_h(comp_name, comp_id, display_name)     \
+private: 												       \
+	const static int id;		 						       \
+public: 												       \
+	const static std::string name; 		       				   \
+	comp_name() = default; static int get_id() { return id; }  \
+
+#define init_component_cpp(class_name, comp_id, display_name)\
+const std::string class_name::name = display_name; 			 \
+const int class_name::id = comp_id; 						 \
 
 class Component;
 class Object;
@@ -21,13 +30,15 @@ class Scene;
 
 namespace Mogue {
 	class Component {
-		init_component(Component, 0)
+		init_component_h(Component, 0, "Component")
 
 		private:
 			Object* owner;
 
 		public:
 			bool is_enabled;
+			const std::string name = "Component";
+
 
 			virtual void tick(float deltaTime);
 			virtual void begin();

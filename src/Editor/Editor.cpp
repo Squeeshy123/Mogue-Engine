@@ -33,7 +33,14 @@ void show_objects_children(Mogue::Object* obj){
         }
     }
 }
+template<class ComponentType>
+bool list_component(ComponentType c) {
+    return ImGui::Button(c.get_name());
+}
 
+void list_components() {
+
+}
 
 void Editor::begin() {
 
