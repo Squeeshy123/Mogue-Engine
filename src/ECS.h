@@ -24,7 +24,7 @@ namespace Mogue {
 		init_component(Component, 0)
 
 		private:
-			std::shared_ptr<Object> owner;
+			Object* owner;
 
 		public:
 			bool is_enabled;
@@ -34,9 +34,9 @@ namespace Mogue {
 			virtual void input(InputEvent event);
 			virtual void end_tick();
 			virtual void end();
-
-			void set_owner(Object* obj) {owner = std::make_shared<Object>(obj);}
-			std::shared_ptr<Object> get_owner() { return owner; }
+		public:
+			Object* get_owner() { return owner; }
+			void set_owner(Object* p_owner) { owner = p_owner; }
 	};
 
 	class Object {
@@ -84,6 +84,7 @@ namespace Mogue {
 			void add_child(Object child);
 			std::shared_ptr<Object> create_child();
 			std::shared_ptr<Object> get_child(int index);
+
 			std::vector<std::shared_ptr<Object>> get_children() {
 				return children;
 			}
@@ -120,5 +121,5 @@ namespace Mogue {
 			WorldManager* get_world_manager() { return WorldManager::get_singleton(); }
 	
 	};
-
+	
 }

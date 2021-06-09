@@ -12,9 +12,9 @@ void RenderComponent::tick(float deltaTime) {
     for (size_t i = 0; i < verticies.size(); i++)
     {
         if (i % 2 == 0) {
-            render_object->verticies[i] = render_object->verticies[i] * transform.position.x;
+            render_object->verticies[i] = render_object->verticies[i] * transform->position.x;
         } else {
-            render_object->verticies[i] = render_object->verticies[i] * transform.position.y;
+            render_object->verticies[i] = render_object->verticies[i] * transform->position.y;
         }
     }
     

@@ -6,7 +6,6 @@
 
 #include <memory>
 
-using namespace Mogue;
 
 class RenderComponent : public Mogue::Component {
     init_component(RenderComponent, 2)
@@ -15,6 +14,6 @@ class RenderComponent : public Mogue::Component {
         std::shared_ptr<TransformComponent3D> transform;
 
     public:
-      void begin();
+        void begin();
         void tick(float deltaTime);
 };
