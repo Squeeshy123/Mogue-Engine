@@ -10,7 +10,7 @@
 using namespace Mogue;
 
 class TransformComponent3D {
-    init_component_h(TransformComponent3D, 1)
+    init_component_h(TransformComponent3D, 1, "Transform Component")
 
     public:
         Vector3 position{0.0f, 0.0f, 0.0f};

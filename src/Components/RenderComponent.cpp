@@ -3,6 +3,8 @@
 
 using namespace Mogue;
 
+init_component_cpp(RenderComponent, 2, "Render Component")
+
 void RenderComponent::begin() {
     transform = get_owner()->get_component<TransformComponent3D>();
 }

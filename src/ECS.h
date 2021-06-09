@@ -20,9 +20,7 @@ public: 												       \
 	const static std::string name; 		       				   \
 	comp_name() = default; static int get_id() { return id; }  \
 
-#define init_component_cpp(class_name, comp_id, display_name)\
-const std::string class_name::name = display_name; 			 \
-const int class_name::id = comp_id; 						 \
+#define init_component_cpp(class_name, comp_id, display_name)
 
 class Component;
 class Object;
@@ -37,7 +35,6 @@ namespace Mogue {
 
 		public:
 			bool is_enabled;
-			const std::string name = "Component";
 
 
 			virtual void tick(float deltaTime);
