@@ -8,6 +8,11 @@
 
 #define callfunc(func, ...) func(__VA_ARGS__)
 
+#define add_component_if_exist(classname) \
+if (objs[current_obj]->get_component<classname>() != nullptr) {     \
+        objs[current_obj]->add_component<classname>();              \
+    }                                                               \
+
 using namespace Mogue;
 
 GLFWwindow* window = nullptr;
@@ -19,9 +24,6 @@ static bool test_drag_and_drop = false;
 static int selection_mask = (1 << 2);
 int current_obj = -1;
 
-std::vector<ComponentToAdd> Components = {
-    ComponentToAdd<TransformComponent3D>{"C"}
-};
 
 void show_objects_children(Mogue::Object* obj){
     std::vector<std::shared_ptr<Mogue::Object>> child_objects = obj->get_children();
@@ -33,6 +35,7 @@ void show_objects_children(Mogue::Object* obj){
         }
     }
 }
+
 template<class ComponentType>
 bool list_component(ComponentType c) {
     return ImGui::Button(c.get_name());
@@ -135,7 +138,14 @@ void Editor::tick(float deltaTime){
                 }
                 
                 if (ImGui::BeginPopup("Add Component")){
-                    
+                    if(ImGui::MenuItem("Transform Component 3D")) {
+                        add_component_if_exist(TransformComponent3D)
+                        ImGui::CloseCurrentPopup();
+                    }
+                    if(ImGui::MenuItem("Render Component")) {
+                        add_component_if_exist(RenderComponent)
+                        ImGui::CloseCurrentPopup();
+                    }
                     ImGui::EndPopup();
                 }
 
