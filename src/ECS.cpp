@@ -3,8 +3,11 @@
 namespace Mogue {
 
 	//Component
+	init_component_cpp(Component, 0, "Component");
 	
-	
+	void Component::list_properties(){
+		if(ImGui::CollapsingHeader(Component::name.c_str())) {}
+	}
 
 	// Object
 
@@ -28,7 +31,7 @@ namespace Mogue {
 
 	void Object::input(InputEvent event) {
 		for(auto& c : components) 
-			if (c->is_enabled) 
+			if (c->is_enabled)
 				c->input(event);
 		for(auto& o : children) 
 			if (o->is_enabled) 
@@ -84,6 +87,7 @@ namespace Mogue {
 		for(auto& o : objects)
 			if (o->is_enabled)
 				o->tick(deltaTime);
+				
 	}
 	void Scene::begin() {
 		for(auto& o : objects)

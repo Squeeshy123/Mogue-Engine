@@ -38,7 +38,7 @@ namespace Mogue {
 			Object* owner;
 
 		public:
-			bool is_enabled;
+			bool is_enabled = false;
 
 
 			virtual void tick(float deltaTime) {}
@@ -48,7 +48,7 @@ namespace Mogue {
 			virtual void end() {}
 
 			// this is supposed to list the properties of the component using ImGui
-			virtual void list_properties() {}
+			virtual void list_properties();
 
 			Object* get_owner() { return owner; }
 			void set_owner(Mogue::Object* p_owner) { owner = p_owner; }
@@ -67,7 +67,7 @@ namespace Mogue {
 				children.clear();
 			}
 
-			bool is_enabled;
+			bool is_enabled = false;
 
 			std::string name;
 
@@ -82,6 +82,7 @@ namespace Mogue {
 			std::shared_ptr<ComponentType> add_component(Args&&... args) {
 				std::shared_ptr<ComponentType> c = std::make_shared<ComponentType>(std::forward<Args>(args)...);
 				c->set_owner(this);
+				c->is_enabled = true;
 				components.push_back(c);
 				return c;
 			}
@@ -142,7 +143,6 @@ namespace Mogue {
 				objects.clear();
 			}
 
-			bool is_enabled;
 
 			std::shared_ptr<Object> add_object();
 			
