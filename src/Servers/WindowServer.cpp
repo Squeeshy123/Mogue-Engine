@@ -44,6 +44,7 @@ namespace Mogue {
 
     WindowServer::WindowServer() 
     {
+        Mogue::Log("Window Server Created");
         WindowServer::singleton = this;
     }
     WindowServer::~WindowServer()

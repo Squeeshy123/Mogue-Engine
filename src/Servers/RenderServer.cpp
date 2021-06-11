@@ -1,6 +1,7 @@
 #include "RenderServer.h"
 
 bool tick_device = false;
+
 namespace Mogue {
     RenderServer* RenderServer::singleton = nullptr;
 
@@ -11,8 +12,6 @@ namespace Mogue {
         return RenderServer::singleton;
     }
 
-    std::unique_ptr<RenderDevice> RenderServer::get_render_device() 
-    { return render_device; }
 
     void RenderServer::initialize() {
         if (render_device != nullptr){

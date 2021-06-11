@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Libs/imgui.h"
-#include "Libs/imgui_impl_glfw.h"
-#include "Libs/imgui_impl_opengl3.h"
 #include <stdio.h>
 
 #include "ECS.h"

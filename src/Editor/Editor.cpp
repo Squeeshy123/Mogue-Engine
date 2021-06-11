@@ -5,13 +5,14 @@
 #include "Components.h"
 
 #include <vector>
+#include <string>
 
-#define callfunc(func, ...) func(__VA_ARGS__)
 
-#define add_component_if_exist(classname) \
-if (objs[current_obj]->get_component<classname>() != nullptr) {     \
-        objs[current_obj]->add_component<classname>();              \
-    }                                                               \
+
+#define add_component(classname)                                \
+if (objs[current_obj]->get_component<classname>() == nullptr) { \
+    objs[current_obj]->add_component<classname>();              \
+}                                                               \
 
 using namespace Mogue;
 
@@ -36,17 +37,18 @@ void show_objects_children(Mogue::Object* obj){
     }
 }
 
-template<class ComponentType>
-bool list_component(ComponentType c) {
-    return ImGui::Button(c.get_name());
+template<class CompType>
+bool list_component() {
+    return ImGui::Button(CompType::get_name().c_str());
 }
 
 void list_components() {
-
+    list_component<TransformComponent3D>();
+    list_component<RenderComponent>();
 }
 
 void Editor::begin() {
-
+    get_world_manager()->load_scene<Scene>();
 }
 
 
@@ -56,7 +58,7 @@ void Editor::tick(float deltaTime){
     
     std::vector<std::shared_ptr<Mogue::Object>> objs;
     if (current_scene == nullptr) {
-        get_world_manager()->load_scene<Scene>();
+        
     }
     if (current_scene != nullptr){
         objs = current_scene->get_objects();
@@ -132,6 +134,12 @@ void Editor::tick(float deltaTime){
                 }
             }
 
+            { // List Components
+                for(auto& c : objs[current_obj]->get_components()) {
+                    c->list_properties();
+                }
+            }
+
             { // Add Component button
                 if(ImGui::Button("+ Add Component +")){
                     ImGui::OpenPopup("Add Component");
@@ -139,11 +147,11 @@ void Editor::tick(float deltaTime){
                 
                 if (ImGui::BeginPopup("Add Component")){
                     if(ImGui::MenuItem("Transform Component 3D")) {
-                        add_component_if_exist(TransformComponent3D)
+                        add_component(TransformComponent3D);
                         ImGui::CloseCurrentPopup();
                     }
                     if(ImGui::MenuItem("Render Component")) {
-                        add_component_if_exist(RenderComponent)
+                        add_component(RenderComponent);
                         ImGui::CloseCurrentPopup();
                     }
                     ImGui::EndPopup();
@@ -167,16 +175,8 @@ Editor::Editor() {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-    window = WindowServer::get_singleton()->get_window();
-
-    ImGui::StyleColorsDark();
-
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init();
 }
 
 Editor::~Editor(){
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    
 }

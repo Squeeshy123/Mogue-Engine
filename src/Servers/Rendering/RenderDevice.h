@@ -5,6 +5,7 @@
 
 #include "RenderObject.h"
 
+
 namespace Mogue {
     class RenderDevice {
         private:

@@ -17,7 +17,11 @@ namespace Mogue {
                 void tick();
                 void end_tick();
                 
-                std::unique_ptr<RenderDevice> get_render_device();
+                RenderDevice* get_render_device(){ 
+                    if (render_device != nullptr)
+                        return render_device.get(); 
+                    return nullptr;
+                }
 
                 ~RenderServer() {
 
@@ -28,6 +32,8 @@ namespace Mogue {
                 
                 
                 RenderServer() {
+                    Mogue::Log("Render Server Created");
+                    RenderServer::singleton = this;
                     render_device  = Mogue::make_unique<OpenGLRenderDevice>();
                 }
     };

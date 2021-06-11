@@ -2,16 +2,24 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <stdio.h>
+
+
 #include "Core.h"
 
 #include "Servers/ServerManager.h"
 #include "WorldManager.h"
 
+#include "Libs/imgui_impl_opengl3.h"
+#include "Libs/imgui_impl_glfw.h"
+
 #include "Editor/Editor.h"
 
 void glfw_onError(int error, const char* description)
 {
-    Mogue::Error("");
+    std::string output(description);
+    output.insert(0, std::to_string(error));
+    Mogue::Error(description);
 }
 
 
@@ -27,7 +35,8 @@ void load_editor(){
 
 int main(int argc, char *argv[])
 {
-    
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
 
     glewExperimental = true;
     if( !glfwInit() )
@@ -75,13 +84,20 @@ int main(int argc, char *argv[])
     }
 
     world_manager->begin();
+    ImGui::StyleColorsDark();
 
+    ImGui_ImplGlfw_InitForOpenGL(WindowServer::get_singleton()->get_window(), true);
+    ImGui_ImplOpenGL3_Init();
     // TICK FUNCTION
     while(WindowServer::get_singleton()->is_running && !glfwWindowShouldClose(WindowServer::get_singleton()->get_window()))
     {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+      
+
+        
 
         server_manager->tick();
 
@@ -97,6 +113,10 @@ int main(int argc, char *argv[])
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
     world_manager->end();
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     delete world_manager;
     delete server_manager;

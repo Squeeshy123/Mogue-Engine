@@ -3,7 +3,7 @@
 
 #include "Servers/WindowServer.h"
 #include "Servers/InputServer.h"
-#include "RenderServer.h"
+#include "Servers/RenderServer.h"
 
 namespace Mogue {
 	class ServerManager

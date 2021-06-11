@@ -64,8 +64,7 @@ std::shared_ptr<RenderObject> OpenGLRenderDevice::add_render_object(RenderObject
 float verts[8] = {
     -0.5f, -0.5f,
      0.0f,  0.5f,
-     0.5f, -0.5f,
-     1.0f, 1.0f
+     0.5f, -0.5f
 };
 
 bool OpenGLRenderDevice::load_resources() {
@@ -75,8 +74,7 @@ bool OpenGLRenderDevice::load_resources() {
         Mogue::Log("Initialized GLEW");
     }
     
-    add_render_object(new RenderObject());
-
+    
     std::string vshader = 
     "#version 330 core\n"
     ""
@@ -109,13 +107,16 @@ void OpenGLRenderDevice::render() {
 
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), vert, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, render_object->verticies.size() * sizeof(float), vert, GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * render_object->render_method, 0);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 12*3);
     }
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+    
     
 }
 
