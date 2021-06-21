@@ -74,6 +74,8 @@ bool OpenGLRenderDevice::load_resources() {
         Mogue::Log("Initialized GLEW");
     }
     
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     
     std::string vshader = 
     "#version 330 core\n"
@@ -103,16 +105,18 @@ void OpenGLRenderDevice::render() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     for(auto& render_object : render_objects) {
-        float* vert = &render_object->verticies[0];
+        if (render_object->rendered){
+            float* vert = &render_object->verticies[0];
 
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, render_object->verticies.size() * sizeof(float), vert, GL_STATIC_DRAW);
+            glGenBuffers(1, &buffer);
+            glBindBuffer(GL_ARRAY_BUFFER, buffer);
+            glBufferData(GL_ARRAY_BUFFER, render_object->verticies.size() * sizeof(float), vert, GL_STATIC_DRAW);
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * render_object->render_method, 0);
-        
-        glDrawArrays(GL_TRIANGLES, 0, 12*3);
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * render_object->render_method, 0);
+            
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+        }
     }
 
     

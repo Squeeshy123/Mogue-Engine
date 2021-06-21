@@ -17,4 +17,5 @@ class RenderComponent : public Mogue::Component {
     public:
         void begin();
         void tick(float deltaTime);
+        void list_properties();
 };

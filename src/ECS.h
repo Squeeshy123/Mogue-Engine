@@ -10,7 +10,6 @@
 #include "Servers/InputServer.h"
 #include "WorldManager.h"
 
-#include "Libs/imgui.h"
 
 #define init_component_h(class_name, comp_id)     			   \
 private: 												       \
@@ -18,11 +17,11 @@ private: 												       \
 public: 												       \
 	const static std::string name; 		       				   \
 	class_name() = default; static int get_id() { return id; } \
-	static std::string get_name() { return name; } 			   \
+	static std::string get_name() { return name; }             \
 
-#define init_component_cpp(class_name, comp_id, display_name)   \
-const  std::string class_name::name = display_name;				\
-const  int class_name::id = comp_id;					  		\
+#define init_component_cpp(class_name, comp_id, display_name) \
+const  std::string class_name::name = display_name;		      \
+const  int class_name::id = comp_id;					      \
 
 
 
@@ -40,6 +39,8 @@ namespace Mogue {
 		public:
 			bool is_enabled = false;
 
+			virtual void set_enabled(bool enabled ) { is_enabled = enabled; }
+			virtual bool get_enabled() { return is_enabled; }
 
 			virtual void tick(float deltaTime) {}
 			virtual void begin() {}
@@ -48,11 +49,11 @@ namespace Mogue {
 			virtual void end() {}
 
 			// this is supposed to list the properties of the component using ImGui
+			void list_default_properties(std::string display_name);
 			virtual void list_properties();
 
 			Object* get_owner() { return owner; }
 			void set_owner(Mogue::Object* p_owner) { owner = p_owner; }
-
 
 	};
 
@@ -60,16 +61,16 @@ namespace Mogue {
 		private:
 			std::vector<std::shared_ptr<Component>> components;
 			std::vector<std::shared_ptr<Object>> children;
-
-		public:
-			~Object() {
-				components.clear();
-				children.clear();
-			}
-
+			
 			bool is_enabled = false;
+		
+		public:
+			
 
 			std::string name;
+
+			virtual void set_enabled(bool enabled) { is_enabled = enabled; }
+			virtual bool& get_enabled() { return is_enabled; }
 
 			void set_name(std::string new_name) {
 				name = new_name;
@@ -83,6 +84,7 @@ namespace Mogue {
 				std::shared_ptr<ComponentType> c = std::make_shared<ComponentType>(std::forward<Args>(args)...);
 				c->set_owner(this);
 				c->is_enabled = true;
+				c->begin();
 				components.push_back(c);
 				return c;
 			}
@@ -115,7 +117,6 @@ namespace Mogue {
 				components.erase(components.begin()+index-1);
 			}
 
-			
 
 			void add_child(Object child);
 			std::shared_ptr<Object> create_child();
@@ -131,7 +132,6 @@ namespace Mogue {
 			virtual void end_tick();
 			virtual void end();
 
-			
 	};
 
 	class Scene {
@@ -160,7 +160,6 @@ namespace Mogue {
 			WindowServer* get_window_server() { return WindowServer::get_singleton(); }
 			InputServer*  get_input_server()  { return InputServer::get_singleton();  }
 			WorldManager* get_world_manager() { return WorldManager::get_singleton(); }
-			
 			
 	};
 	

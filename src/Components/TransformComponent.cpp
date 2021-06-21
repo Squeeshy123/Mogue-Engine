@@ -1,5 +1,6 @@
 #include "TransformComponent.h"
 #include <cstdint>
+#include "Libs/imgui.h"
 #include "libs/imgui_internal.h"
 
 init_component_cpp(TransformComponent3D, 1, "Transform Component")

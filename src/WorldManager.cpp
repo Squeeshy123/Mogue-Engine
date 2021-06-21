@@ -23,10 +23,9 @@ namespace Mogue {
         }
     }
     void WorldManager::tick(float deltaTime) {
-        for(auto& scene : active_scenes){
-            if (scene != nullptr) {
-                scene->tick(deltaTime);
-            }
+        for(size_t i = 0; i < active_scenes.size(); i++){
+            active_scenes[i]->tick(deltaTime);
+            
         }
     }
     void WorldManager::input(InputEvent event) {

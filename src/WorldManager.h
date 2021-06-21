@@ -27,18 +27,20 @@ namespace Mogue {
                 return active_scenes[active_scenes.size()-1].get();
             }
 
-            Scene* get_scene(int index){
+            Scene* get_scene(int index, bool log){
                 if (index < active_scenes.size()-1){
                     if(active_scenes[index] != nullptr){
                         return active_scenes[index].get();
                     } 
                     else {
-                        Warning("Scene does not exist");
+                        if (log)
+                            Warning("Scene does not exist");
                         return nullptr;
                     }
                 } 
                 else {
-                    Warning("Scene Index out of range");
+                    if (log)
+                            Warning("Scene Index out of range");
                     return nullptr;
                 }
             }

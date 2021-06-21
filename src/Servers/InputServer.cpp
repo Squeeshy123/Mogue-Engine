@@ -12,8 +12,7 @@ namespace Mogue{
         }
     }
 
-    void InputServer::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-    {
+    void InputServer::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
         // run press key functionality here
         printf("%i\n", key);
     }

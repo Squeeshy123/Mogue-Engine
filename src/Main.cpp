@@ -73,9 +73,9 @@ int main(int argc, char *argv[])
         }
         else {
             Mogue::Log("Usage: <command> [parameters]");
-            Mogue::Log("Commands: ");
-            Mogue::Log("-e : Loads the editor");
-            Mogue::Log("-s : Loads a specific scene");
+            printf("Commands: \n");
+            printf("-e : Loads the editor\n");
+            printf("-s : Loads a specific scene\n");
         }
         
     }
